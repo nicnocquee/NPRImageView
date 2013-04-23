@@ -16,8 +16,8 @@
 		03C6793D172688AA004D2BA3 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C6793C172688AA004D2BA3 /* Default.png */; };
 		03C6793F172688AA004D2BA3 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C6793E172688AA004D2BA3 /* Default@2x.png */; };
 		03C67941172688AA004D2BA3 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C67940172688AA004D2BA3 /* Default-568h@2x.png */; };
-		03C67944172688AA004D2BA3 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C67943172688AA004D2BA3 /* ViewController.m */; };
-		03C67947172688AA004D2BA3 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 03C67945172688AA004D2BA3 /* ViewController.xib */; };
+		03C6794F172688D7004D2BA3 /* ExampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C6794E172688D7004D2BA3 /* ExampleViewController.m */; };
+		03C6795217268979004D2BA3 /* NPImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C6795117268979004D2BA3 /* NPImageView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,9 +34,10 @@
 		03C6793C172688AA004D2BA3 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		03C6793E172688AA004D2BA3 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		03C67940172688AA004D2BA3 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		03C67942172688AA004D2BA3 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		03C67943172688AA004D2BA3 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		03C67946172688AA004D2BA3 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
+		03C6794D172688D7004D2BA3 /* ExampleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleViewController.h; sourceTree = "<group>"; };
+		03C6794E172688D7004D2BA3 /* ExampleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleViewController.m; sourceTree = "<group>"; };
+		03C6795017268979004D2BA3 /* NPImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NPImageView.h; path = Class/NPImageView.h; sourceTree = SOURCE_ROOT; };
+		03C6795117268979004D2BA3 /* NPImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NPImageView.m; path = Class/NPImageView.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,10 +86,10 @@
 			children = (
 				03C67939172688AA004D2BA3 /* AppDelegate.h */,
 				03C6793A172688AA004D2BA3 /* AppDelegate.m */,
-				03C67942172688AA004D2BA3 /* ViewController.h */,
-				03C67943172688AA004D2BA3 /* ViewController.m */,
-				03C67945172688AA004D2BA3 /* ViewController.xib */,
 				03C67931172688AA004D2BA3 /* Supporting Files */,
+				03C6794D172688D7004D2BA3 /* ExampleViewController.h */,
+				03C6794E172688D7004D2BA3 /* ExampleViewController.m */,
+				03C6795317268981004D2BA3 /* NPImageView */,
 			);
 			path = NPRImageView;
 			sourceTree = "<group>";
@@ -105,6 +106,15 @@
 				03C67940172688AA004D2BA3 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		03C6795317268981004D2BA3 /* NPImageView */ = {
+			isa = PBXGroup;
+			children = (
+				03C6795017268979004D2BA3 /* NPImageView.h */,
+				03C6795117268979004D2BA3 /* NPImageView.m */,
+			);
+			name = NPImageView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -162,7 +172,6 @@
 				03C6793D172688AA004D2BA3 /* Default.png in Resources */,
 				03C6793F172688AA004D2BA3 /* Default@2x.png in Resources */,
 				03C67941172688AA004D2BA3 /* Default-568h@2x.png in Resources */,
-				03C67947172688AA004D2BA3 /* ViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -175,7 +184,8 @@
 			files = (
 				03C67937172688AA004D2BA3 /* main.m in Sources */,
 				03C6793B172688AA004D2BA3 /* AppDelegate.m in Sources */,
-				03C67944172688AA004D2BA3 /* ViewController.m in Sources */,
+				03C6794F172688D7004D2BA3 /* ExampleViewController.m in Sources */,
+				03C6795217268979004D2BA3 /* NPImageView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -188,14 +198,6 @@
 				03C67934172688AA004D2BA3 /* en */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		03C67945172688AA004D2BA3 /* ViewController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				03C67946172688AA004D2BA3 /* en */,
-			);
-			name = ViewController.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

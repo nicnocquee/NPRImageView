@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  NPImageView.h
 //  NPRImageView
 //
 //  Created by Nico Prananta on 4/23/13.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
+@interface NPImageView : UIImageView
 
 @end
