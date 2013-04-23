@@ -382,6 +382,7 @@
 				GCC_PREFIX_HEADER = "NPRImageView/NPRImageView-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Externals/libextobjc/libffi/ios/include";
 				INFOPLIST_FILE = "NPRImageView/NPRImageView-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
@@ -398,6 +399,7 @@
 				GCC_PREFIX_HEADER = "NPRImageView/NPRImageView-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Externals/libextobjc/libffi/ios/include";
 				INFOPLIST_FILE = "NPRImageView/NPRImageView-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",

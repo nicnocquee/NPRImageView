@@ -24,6 +24,7 @@
         _nprImageView = [[NPRImageView alloc] initWithFrame:CGRectInset(self.contentView.bounds, 10, 10)];
         [_nprImageView setAutoresizingMask:UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth];
         [_nprImageView setBackgroundColor:[UIColor whiteColor]];
+        [_nprImageView setContentMode:UIViewContentModeScaleAspectFill];
         [self.contentView addSubview:_nprImageView];
     }
     return self;

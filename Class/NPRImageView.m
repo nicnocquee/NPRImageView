@@ -25,10 +25,10 @@
 @property (strong,nonatomic) NSString *cacheDirectoryName;
 @property (strong,nonatomic) NSString *cacheDirectoryPath;
 
-@property (nonatomic, strong) UIImage *originalImage;
 @property (nonatomic, strong) NSURL *imageContentURL;
 @property (nonatomic, strong) NSMutableDictionary *diskKeys;
 @property (nonatomic, strong) UIImageView *customImageView;
+@property (nonatomic, strong) NSString *cacheKey;
 
 @end
 
@@ -205,16 +205,13 @@
 - (void)setImageWithContentsOfURL:(NSURL *)URL placeholderImage:(UIImage *)placeholderImage {
     if (![URL isEqual:self.imageContentURL])
     {
+        [self setCacheKeyWithURL:URL.absoluteString];
+        
         [self.messageLabel setText:nil];
         [self.messageLabel setHidden:YES];
         [self.progressView setHidden:YES];
         [self setNeedsLayout];
         
-        //update processed image
-        
-        [self willChangeValueForKey:@"image"];
-        self.originalImage = nil;
-        [self didChangeValueForKey:@"image"];
         self.imageContentURL = URL;
         
         self.placeholderImage = placeholderImage;
@@ -239,6 +236,16 @@
     }
 }
 
+- (void)setContentMode:(UIViewContentMode)contentMode
+{
+    if (self.contentMode != contentMode)
+    {
+        super.contentMode = contentMode;
+        [self.customImageView setContentMode:contentMode];
+        [self setNeedsLayout];
+    }
+}
+
 #pragma mark - Image Processing
 
 - (void)showPlaceholderImage {
@@ -247,26 +254,25 @@
 
 - (void)queueImageForProcessing {
     // check if image exists in cache
-    UIImage *processedImage = [self cachedProcessImageForKey:self.imageContentURL.absoluteString];
+    UIImage *processedImage = [self cachedProcessImageForKey:self.cacheKey];
     if (processedImage) {
         self.customImageView.image = processedImage;
         return;
     } else {
         // check if image exists on disk
-        if ([self imageExistsOnDiskWithKey:self.imageContentURL.absoluteString]) {
+        if ([self imageExistsOnDiskWithKey:self.cacheKey]) {
             if (!self.shouldHideIndicatorView) {
                 [self.indicatorView startAnimating];
                 [self.indicatorView setHidden:NO];
             }
-            NSString *key = self.imageContentURL.absoluteString;
-            @weakify(self);
+            NSString *key = self.cacheKey;
             [self showPlaceholderImage];
+            @weakify(self);
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
                 @strongify(self);
                 UIImage *image = [self imageFromDiskWithKey:key];
                 if (image) {
-                    self.originalImage = image;
-                    [self processImage:image url:key];
+                    [self processImage:image key:key];
                 }
             });
             return;
@@ -319,10 +325,8 @@
         @strongify(self);
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if (responseObject) {
-                self.originalImage = responseObject;
-                [self processImage:responseObject url:operation.request.URL.absoluteString];
+                [self processImage:responseObject key:[self cacheKeyWithURL:operation.request.URL.absoluteString]];
             } else {
-                self.originalImage = nil;
                 [self setProcessedImageOnMainThread:@[[NSNull null], operation.request.URL.absoluteString, operation.request.URL.absoluteString]];
             }
         });
@@ -336,7 +340,6 @@
             });
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                self.originalImage = nil;
                 [self setProcessedImageOnMainThread:@[[NSNull null], operation.request.URL.absoluteString, operation.request.URL.absoluteString]];
             });
         }
@@ -387,14 +390,14 @@
     [queue setSuspended:NO];
 }
 
-- (void)processImage:(UIImage *)image url:(NSString *)key {
+- (void)processImage:(UIImage *)image key:(NSString *)key {
     //check cache
     UIImage *processedImage = [self cachedProcessImageForKey:key];
     if (!processedImage)
     {
         if (image) {
             //crop and scale image
-            processedImage = [self.originalImage imageCroppedAndScaledToSize:self.bounds.size
+            processedImage = [image imageCroppedAndScaledToSize:self.bounds.size
                                                     contentMode:self.contentMode
                                                        padToFit:NO];
         } else {
@@ -419,10 +422,10 @@
         processedImage = ([processedImage isKindOfClass:[NSNull class]])? nil: processedImage;
         
         //set image
-        if ([cacheKey isEqualToString:self.imageContentURL.absoluteString])
+        if ([self.cacheKey isEqualToString:cacheKey])
         {
-            //implement crossfade transition without needing to import QuartzCore
             
+            // crossfade
             id animation = objc_msgSend(NSClassFromString(@"CATransition"), @selector(animation));
             objc_msgSend(animation, @selector(setType:), @"kCATransitionFade");
             objc_msgSend(self.layer, @selector(addAnimation:forKey:), animation, nil);
@@ -506,16 +509,24 @@
 }
 
 - (BOOL)imageExistsOnDiskWithKey:(NSString *)key{
-	if(self.diskKeys) return [self.diskKeys objectForKey:[NSString stringWithFormat:@"%d", [key hash]]]==nil ? NO : YES;
+	if(self.diskKeys) return [self.diskKeys objectForKey:key]==nil ? NO : YES;
     return [[NSFileManager defaultManager] fileExistsAtPath:[self filePathWithKey:key]];
 }
 
 - (UIImage*)imageFromDiskWithKey:(NSString*)key{
-	NSData *data = [NSData dataWithContentsOfFile:[self filePathWithKey:[NSString stringWithFormat:@"%d", [key hash]]]];
+	NSData *data = [NSData dataWithContentsOfFile:[self filePathWithKey:key]];
 	return [[UIImage alloc] initWithData:data];
 }
 
 #pragma mark - Cache
+
+- (void)setCacheKeyWithURL:(NSString *)url {
+    self.cacheKey = [self cacheKeyWithURL:url];
+}
+
+- (NSString *)cacheKeyWithURL:(NSString *)url {
+    return [NSString stringWithFormat:@"%d_%i", [url hash], self.contentMode];
+}
 
 - (UIImage *)cachedProcessImageForKey:(NSString *)key {
     return [[[self class] processedImageCache] objectForKey:key];
