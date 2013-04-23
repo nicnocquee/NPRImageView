@@ -65,6 +65,7 @@
     ImageViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (!cell) {
         cell = [[ImageViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     }
     [cell setImageURL:[self.images objectAtIndex:indexPath.row] placeholderImage:nil];
     return cell;

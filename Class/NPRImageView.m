@@ -41,8 +41,69 @@
 
 @end
 
+@interface NPRFailDownloadArray : NSObject
+
+@property (nonatomic, strong) NSMutableArray *mutableArray;
+
++ (NPRFailDownloadArray *)array;
+- (BOOL)contains:(id)object;
+- (void)addObject:(id)object;
+- (void)removeObject:(id)object;
+- (NSInteger)count;
+
+@end
+
 #pragma mark -
 #pragma mark - Class Implementations
+
+@implementation NPRFailDownloadArray
+
++ (NPRFailDownloadArray *)array {
+    static NPRFailDownloadArray *failArray = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        failArray = [[NPRFailDownloadArray alloc] init];
+    });
+    return failArray;
+}
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        _mutableArray = [NSMutableArray array];
+    }
+    return self;
+}
+
+- (BOOL)contains:(id)object {
+    @synchronized(self) {
+        return [self.mutableArray containsObject:object];
+    }
+}
+
+- (void)addObject:(id)object {
+    @synchronized(self) {
+        if (![self.mutableArray containsObject:object]) {
+            [self.mutableArray addObject:object];
+        }
+    }
+}
+
+- (void)removeObject:(id)object {
+    @synchronized(self) {
+        if ([self.mutableArray containsObject:object]) {
+            [self.mutableArray removeObject:object];
+        }
+    }
+}
+
+- (NSInteger)count {
+    @synchronized(self) {
+        return self.mutableArray.count;
+    }
+}
+
+@end
 
 @implementation NSOperationQueueObserver
 
@@ -167,6 +228,23 @@
     [[NSOperationQueueObserver sharedQueueObserver] observe];
     
     self.cacheDirectoryName = @"nprimageviewCache";
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapped:)];
+    [_customImageView addGestureRecognizer:tapGesture];
+    [_customImageView setUserInteractionEnabled:YES];
+    [self setUserInteractionEnabled:YES];
+}
+
+#pragma mark - Gesture
+
+- (void)imageViewTapped:(UITapGestureRecognizer *)gesture {
+    if ([[NPRFailDownloadArray array] contains:self.imageContentURL.absoluteString]) {
+        [self.indicatorView startAnimating];
+        [self.indicatorView setHidden:NO];
+        [self.messageLabel setHidden:YES];
+        [self setNeedsLayout];
+        [self performSelector:@selector(queueImageForProcessing) withObject:nil afterDelay:1];
+    }
 }
 
 #pragma mark - Layout
@@ -336,6 +414,7 @@
     }];
     
     [imageOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        [[NPRFailDownloadArray array] removeObject:operation.request.URL.absoluteString];
         @strongify(self);
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if (responseObject) {
@@ -347,10 +426,11 @@
         });
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        [[NPRFailDownloadArray array] addObject:operation.request.URL.absoluteString];
         if ([operation.request.URL.absoluteString isEqualToString:self.imageContentURL.absoluteString]) {
             @strongify(self);
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.messageLabel setText:NSLocalizedString(@"Image cannot be downloaded", nil)];
+                [self.messageLabel setText:NSLocalizedString(@"Image cannot be downloaded. Tap to reload.", nil)];
                 [self.messageLabel setHidden:NO];
                 [self.indicatorView stopAnimating];
                 [self setNeedsLayout];
