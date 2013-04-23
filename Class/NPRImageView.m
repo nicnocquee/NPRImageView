@@ -28,6 +28,7 @@
 @property (nonatomic, strong) UIImage *originalImage;
 @property (nonatomic, strong) NSURL *imageContentURL;
 @property (nonatomic, strong) NSMutableDictionary *diskKeys;
+@property (nonatomic, strong) UIImageView *customImageView;
 
 @end
 
@@ -144,7 +145,9 @@
 
 - (void)setUp
 {
-    self.contentMode = UIViewContentModeScaleAspectFill;
+    _customImageView = [[UIImageView alloc] initWithFrame:self.bounds];
+    [_customImageView setBackgroundColor:[UIColor clearColor]];
+    [self addSubview:_customImageView];
     
     _progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
     _indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -171,6 +174,7 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
+    [self.customImageView setFrame:self.bounds];
     
     if (!self.indicatorView.hidden) {
         [self.indicatorView setCenter:CGPointMake(CGRectGetWidth(self.frame)/2, CGRectGetHeight(self.frame)/2 - CGRectGetHeight(self.indicatorView.frame)/2 - 5)];
@@ -238,14 +242,14 @@
 #pragma mark - Image Processing
 
 - (void)showPlaceholderImage {
-    self.image = self.placeholderImage;
+    self.customImageView.image = self.placeholderImage;
 }
 
 - (void)queueImageForProcessing {
     // check if image exists in cache
     UIImage *processedImage = [self cachedProcessImageForKey:self.imageContentURL.absoluteString];
     if (processedImage) {
-        self.image = processedImage;
+        self.customImageView.image = processedImage;
         return;
     } else {
         // check if image exists on disk
@@ -424,7 +428,7 @@
             objc_msgSend(self.layer, @selector(addAnimation:forKey:), animation, nil);
             
             //set processed image
-            self.image = processedImage;
+            self.customImageView.image = processedImage;
             
             if (processedImage) {
                 [self.messageLabel setHidden:YES];
