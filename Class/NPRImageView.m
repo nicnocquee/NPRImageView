@@ -262,7 +262,7 @@
                 UIImage *image = [self imageFromDiskWithKey:key];
                 if (image) {
                     self.originalImage = image;
-                    [self processImageWithURL:key];
+                    [self processImage:image url:key];
                 }
             });
             return;
@@ -316,7 +316,7 @@
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if (responseObject) {
                 self.originalImage = responseObject;
-                [self processImageWithURL:operation.request.URL.absoluteString];
+                [self processImage:responseObject url:operation.request.URL.absoluteString];
             } else {
                 self.originalImage = nil;
                 [self setProcessedImageOnMainThread:@[[NSNull null], operation.request.URL.absoluteString, operation.request.URL.absoluteString]];
@@ -383,12 +383,12 @@
     [queue setSuspended:NO];
 }
 
-- (void)processImageWithURL:(NSString *)key {
+- (void)processImage:(UIImage *)image url:(NSString *)key {
     //check cache
     UIImage *processedImage = [self cachedProcessImageForKey:key];
     if (!processedImage)
     {
-        if (self.originalImage) {
+        if (image) {
             //crop and scale image
             processedImage = [self.originalImage imageCroppedAndScaledToSize:self.bounds.size
                                                     contentMode:self.contentMode
@@ -424,9 +424,7 @@
             objc_msgSend(self.layer, @selector(addAnimation:forKey:), animation, nil);
             
             //set processed image
-            [self willChangeValueForKey:@"processedImage"];
             self.image = processedImage;
-            [self didChangeValueForKey:@"processedImage"];
             
             if (processedImage) {
                 [self.messageLabel setHidden:YES];
