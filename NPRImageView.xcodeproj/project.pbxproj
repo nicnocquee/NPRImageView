@@ -17,7 +17,7 @@
 		03C6793F172688AA004D2BA3 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C6793E172688AA004D2BA3 /* Default@2x.png */; };
 		03C67941172688AA004D2BA3 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C67940172688AA004D2BA3 /* Default-568h@2x.png */; };
 		03C6794F172688D7004D2BA3 /* ExampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C6794E172688D7004D2BA3 /* ExampleViewController.m */; };
-		03C6795217268979004D2BA3 /* NPImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C6795117268979004D2BA3 /* NPImageView.m */; };
+		03C6795217268979004D2BA3 /* NPRImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C6795117268979004D2BA3 /* NPRImageView.m */; };
 		03C6796917268B51004D2BA3 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C6795717268B51004D2BA3 /* AFHTTPClient.m */; };
 		03C6796A17268B51004D2BA3 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C6795917268B51004D2BA3 /* AFHTTPRequestOperation.m */; };
 		03C6796B17268B51004D2BA3 /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C6795B17268B51004D2BA3 /* AFImageRequestOperation.m */; };
@@ -30,6 +30,7 @@
 		03C679BD17268BA4004D2BA3 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03C679BC17268BA4004D2BA3 /* MobileCoreServices.framework */; };
 		03C679BF17268BA9004D2BA3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03C679BE17268BA9004D2BA3 /* SystemConfiguration.framework */; };
 		03C67BC517268F74004D2BA3 /* EXTScope.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C67BC317268F74004D2BA3 /* EXTScope.m */; };
+		03C67BC8172690BB004D2BA3 /* ImageViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C67BC6172690BB004D2BA3 /* ImageViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,8 +49,8 @@
 		03C67940172688AA004D2BA3 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		03C6794D172688D7004D2BA3 /* ExampleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleViewController.h; sourceTree = "<group>"; };
 		03C6794E172688D7004D2BA3 /* ExampleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleViewController.m; sourceTree = "<group>"; };
-		03C6795017268979004D2BA3 /* NPImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NPImageView.h; path = Class/NPImageView.h; sourceTree = SOURCE_ROOT; };
-		03C6795117268979004D2BA3 /* NPImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NPImageView.m; path = Class/NPImageView.m; sourceTree = SOURCE_ROOT; };
+		03C6795017268979004D2BA3 /* NPRImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NPRImageView.h; path = Class/NPRImageView.h; sourceTree = SOURCE_ROOT; };
+		03C6795117268979004D2BA3 /* NPRImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NPRImageView.m; path = Class/NPRImageView.m; sourceTree = SOURCE_ROOT; };
 		03C6795617268B51004D2BA3 /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFHTTPClient.h; path = Externals/AFNetworking/AFNetworking/AFHTTPClient.h; sourceTree = "<group>"; };
 		03C6795717268B51004D2BA3 /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFHTTPClient.m; path = Externals/AFNetworking/AFNetworking/AFHTTPClient.m; sourceTree = "<group>"; };
 		03C6795817268B51004D2BA3 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFHTTPRequestOperation.h; path = Externals/AFNetworking/AFNetworking/AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -74,6 +75,8 @@
 		03C67BC217268F74004D2BA3 /* EXTScope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EXTScope.h; path = Externals/libextobjc/extobjc/EXTScope.h; sourceTree = "<group>"; };
 		03C67BC317268F74004D2BA3 /* EXTScope.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EXTScope.m; path = Externals/libextobjc/extobjc/EXTScope.m; sourceTree = "<group>"; };
 		03C67BC417268F74004D2BA3 /* metamacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = metamacros.h; path = Externals/libextobjc/extobjc/metamacros.h; sourceTree = "<group>"; };
+		03C67BC6172690BB004D2BA3 /* ImageViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageViewCell.m; sourceTree = "<group>"; };
+		03C67BC7172690BB004D2BA3 /* ImageViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageViewCell.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,12 +128,14 @@
 		03C67930172688AA004D2BA3 /* NPRImageView */ = {
 			isa = PBXGroup;
 			children = (
+				03C67BC6172690BB004D2BA3 /* ImageViewCell.m */,
+				03C67BC7172690BB004D2BA3 /* ImageViewCell.h */,
 				03C67939172688AA004D2BA3 /* AppDelegate.h */,
 				03C6793A172688AA004D2BA3 /* AppDelegate.m */,
 				03C67931172688AA004D2BA3 /* Supporting Files */,
 				03C6794D172688D7004D2BA3 /* ExampleViewController.h */,
 				03C6794E172688D7004D2BA3 /* ExampleViewController.m */,
-				03C6795317268981004D2BA3 /* NPImageView */,
+				03C6795317268981004D2BA3 /* NPRImageView */,
 			);
 			path = NPRImageView;
 			sourceTree = "<group>";
@@ -149,13 +154,13 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		03C6795317268981004D2BA3 /* NPImageView */ = {
+		03C6795317268981004D2BA3 /* NPRImageView */ = {
 			isa = PBXGroup;
 			children = (
-				03C6795017268979004D2BA3 /* NPImageView.h */,
-				03C6795117268979004D2BA3 /* NPImageView.m */,
+				03C6795017268979004D2BA3 /* NPRImageView.h */,
+				03C6795117268979004D2BA3 /* NPRImageView.m */,
 			);
-			name = NPImageView;
+			name = NPRImageView;
 			sourceTree = "<group>";
 		};
 		03C6795417268B2A004D2BA3 /* Externals */ = {
@@ -271,7 +276,7 @@
 				03C67937172688AA004D2BA3 /* main.m in Sources */,
 				03C6793B172688AA004D2BA3 /* AppDelegate.m in Sources */,
 				03C6794F172688D7004D2BA3 /* ExampleViewController.m in Sources */,
-				03C6795217268979004D2BA3 /* NPImageView.m in Sources */,
+				03C6795217268979004D2BA3 /* NPRImageView.m in Sources */,
 				03C6796917268B51004D2BA3 /* AFHTTPClient.m in Sources */,
 				03C6796A17268B51004D2BA3 /* AFHTTPRequestOperation.m in Sources */,
 				03C6796B17268B51004D2BA3 /* AFImageRequestOperation.m in Sources */,
@@ -282,6 +287,7 @@
 				03C6797017268B51004D2BA3 /* AFXMLRequestOperation.m in Sources */,
 				03C6797117268B51004D2BA3 /* UIImageView+AFNetworking.m in Sources */,
 				03C67BC517268F74004D2BA3 /* EXTScope.m in Sources */,
+				03C67BC8172690BB004D2BA3 /* ImageViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

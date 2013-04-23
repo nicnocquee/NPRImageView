@@ -6,12 +6,12 @@
 //  Copyright (c) 2013 Touches. All rights reserved.
 //
 
-#import "NPImageView.h"
+#import "NPRImageView.h"
 
 #import "EXTScope.h"
 #import "AFImageRequestOperation.h"
 
-@implementation NPImageView
+@implementation NPRImageView
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -22,13 +22,5 @@
     return self;
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
 
 @end

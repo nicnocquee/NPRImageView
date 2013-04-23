@@ -1,14 +1,22 @@
 //
-//  ExampleViewController.m
-//  NPRImageView
+//  ViewController.m
+//  ImageViewProgressActivity
 //
-//  Created by Nico Prananta on 4/23/13.
+//  Created by Nico Prananta on 4/22/13.
 //  Copyright (c) 2013 Touches. All rights reserved.
 //
 
 #import "ExampleViewController.h"
 
+#import "ImageViewCell.h"
+
+#import "EXTScope.h"
+
+#define MAX_IMAGES 100
+
 @interface ExampleViewController ()
+
+@property (nonatomic, strong) NSArray *images;
 
 @end
 
@@ -26,12 +34,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
+    [self.tableView setRowHeight:310];
+    [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    
+    [self getImageUrls];
 }
 
 - (void)didReceiveMemoryWarning
@@ -44,78 +51,60 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-#warning Potentially incomplete method implementation.
-    // Return the number of sections.
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
-    // Return the number of rows in the section.
-    return 0;
+    return self.images.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
-    // Configure the cell...
-    
+    ImageViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (!cell) {
+        cell = [[ImageViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
+    [cell setImageURL:[self.images objectAtIndex:indexPath.row] placeholderImage:nil];
     return cell;
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    NSLog(@"Selected: %@", [[self.images objectAtIndex:indexPath.row] absoluteString]);
 }
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)getImageUrls
 {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+    @weakify(self);
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        @strongify(self);
+        NSMutableArray *urls = [NSMutableArray array];
+        
+        //google image api has an 8 page max, with 8 images per page, so 64 image max per search term
+        int urls_grabbed = 0;
+        for (int i = 0; i < 8; i++) {
+            if (urls_grabbed < MAX_IMAGES) {
+                NSURL *jsonURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=maki+horikita&rsz=8&start=%d", i * 8]];
+                NSData *jsonData = [NSData dataWithContentsOfURL:jsonURL];
+                
+                id json = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableLeaves error:nil];
+                for (id result in [[json objectForKey:@"responseData"] objectForKey:@"results"]) {
+                    [urls addObject:[NSURL URLWithString:[result objectForKey:@"url"]]];
+                }
+                
+                urls_grabbed++;
+            }
+        }
+        
+        self.images = [NSArray arrayWithArray:urls];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    });
 }
-*/
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-#pragma mark - Table view delegate
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
-}
 
 @end
