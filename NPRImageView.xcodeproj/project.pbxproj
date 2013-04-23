@@ -18,6 +18,18 @@
 		03C67941172688AA004D2BA3 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C67940172688AA004D2BA3 /* Default-568h@2x.png */; };
 		03C6794F172688D7004D2BA3 /* ExampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C6794E172688D7004D2BA3 /* ExampleViewController.m */; };
 		03C6795217268979004D2BA3 /* NPImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C6795117268979004D2BA3 /* NPImageView.m */; };
+		03C6796917268B51004D2BA3 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C6795717268B51004D2BA3 /* AFHTTPClient.m */; };
+		03C6796A17268B51004D2BA3 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C6795917268B51004D2BA3 /* AFHTTPRequestOperation.m */; };
+		03C6796B17268B51004D2BA3 /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C6795B17268B51004D2BA3 /* AFImageRequestOperation.m */; };
+		03C6796C17268B51004D2BA3 /* AFJSONRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C6795D17268B51004D2BA3 /* AFJSONRequestOperation.m */; };
+		03C6796D17268B51004D2BA3 /* AFNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C6795F17268B51004D2BA3 /* AFNetworkActivityIndicatorManager.m */; };
+		03C6796E17268B51004D2BA3 /* AFPropertyListRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C6796217268B51004D2BA3 /* AFPropertyListRequestOperation.m */; };
+		03C6796F17268B51004D2BA3 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C6796417268B51004D2BA3 /* AFURLConnectionOperation.m */; };
+		03C6797017268B51004D2BA3 /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C6796617268B51004D2BA3 /* AFXMLRequestOperation.m */; };
+		03C6797117268B51004D2BA3 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C6796817268B51004D2BA3 /* UIImageView+AFNetworking.m */; };
+		03C679BD17268BA4004D2BA3 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03C679BC17268BA4004D2BA3 /* MobileCoreServices.framework */; };
+		03C679BF17268BA9004D2BA3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03C679BE17268BA9004D2BA3 /* SystemConfiguration.framework */; };
+		03C67BC517268F74004D2BA3 /* EXTScope.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C67BC317268F74004D2BA3 /* EXTScope.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +50,30 @@
 		03C6794E172688D7004D2BA3 /* ExampleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleViewController.m; sourceTree = "<group>"; };
 		03C6795017268979004D2BA3 /* NPImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NPImageView.h; path = Class/NPImageView.h; sourceTree = SOURCE_ROOT; };
 		03C6795117268979004D2BA3 /* NPImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NPImageView.m; path = Class/NPImageView.m; sourceTree = SOURCE_ROOT; };
+		03C6795617268B51004D2BA3 /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFHTTPClient.h; path = Externals/AFNetworking/AFNetworking/AFHTTPClient.h; sourceTree = "<group>"; };
+		03C6795717268B51004D2BA3 /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFHTTPClient.m; path = Externals/AFNetworking/AFNetworking/AFHTTPClient.m; sourceTree = "<group>"; };
+		03C6795817268B51004D2BA3 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFHTTPRequestOperation.h; path = Externals/AFNetworking/AFNetworking/AFHTTPRequestOperation.h; sourceTree = "<group>"; };
+		03C6795917268B51004D2BA3 /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFHTTPRequestOperation.m; path = Externals/AFNetworking/AFNetworking/AFHTTPRequestOperation.m; sourceTree = "<group>"; };
+		03C6795A17268B51004D2BA3 /* AFImageRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFImageRequestOperation.h; path = Externals/AFNetworking/AFNetworking/AFImageRequestOperation.h; sourceTree = "<group>"; };
+		03C6795B17268B51004D2BA3 /* AFImageRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFImageRequestOperation.m; path = Externals/AFNetworking/AFNetworking/AFImageRequestOperation.m; sourceTree = "<group>"; };
+		03C6795C17268B51004D2BA3 /* AFJSONRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFJSONRequestOperation.h; path = Externals/AFNetworking/AFNetworking/AFJSONRequestOperation.h; sourceTree = "<group>"; };
+		03C6795D17268B51004D2BA3 /* AFJSONRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFJSONRequestOperation.m; path = Externals/AFNetworking/AFNetworking/AFJSONRequestOperation.m; sourceTree = "<group>"; };
+		03C6795E17268B51004D2BA3 /* AFNetworkActivityIndicatorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkActivityIndicatorManager.h; path = Externals/AFNetworking/AFNetworking/AFNetworkActivityIndicatorManager.h; sourceTree = "<group>"; };
+		03C6795F17268B51004D2BA3 /* AFNetworkActivityIndicatorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFNetworkActivityIndicatorManager.m; path = Externals/AFNetworking/AFNetworking/AFNetworkActivityIndicatorManager.m; sourceTree = "<group>"; };
+		03C6796017268B51004D2BA3 /* AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworking.h; path = Externals/AFNetworking/AFNetworking/AFNetworking.h; sourceTree = "<group>"; };
+		03C6796117268B51004D2BA3 /* AFPropertyListRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFPropertyListRequestOperation.h; path = Externals/AFNetworking/AFNetworking/AFPropertyListRequestOperation.h; sourceTree = "<group>"; };
+		03C6796217268B51004D2BA3 /* AFPropertyListRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFPropertyListRequestOperation.m; path = Externals/AFNetworking/AFNetworking/AFPropertyListRequestOperation.m; sourceTree = "<group>"; };
+		03C6796317268B51004D2BA3 /* AFURLConnectionOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFURLConnectionOperation.h; path = Externals/AFNetworking/AFNetworking/AFURLConnectionOperation.h; sourceTree = "<group>"; };
+		03C6796417268B51004D2BA3 /* AFURLConnectionOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFURLConnectionOperation.m; path = Externals/AFNetworking/AFNetworking/AFURLConnectionOperation.m; sourceTree = "<group>"; };
+		03C6796517268B51004D2BA3 /* AFXMLRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFXMLRequestOperation.h; path = Externals/AFNetworking/AFNetworking/AFXMLRequestOperation.h; sourceTree = "<group>"; };
+		03C6796617268B51004D2BA3 /* AFXMLRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFXMLRequestOperation.m; path = Externals/AFNetworking/AFNetworking/AFXMLRequestOperation.m; sourceTree = "<group>"; };
+		03C6796717268B51004D2BA3 /* UIImageView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImageView+AFNetworking.h"; path = "Externals/AFNetworking/AFNetworking/UIImageView+AFNetworking.h"; sourceTree = "<group>"; };
+		03C6796817268B51004D2BA3 /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImageView+AFNetworking.m"; path = "Externals/AFNetworking/AFNetworking/UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
+		03C679BC17268BA4004D2BA3 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		03C679BE17268BA9004D2BA3 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		03C67BC217268F74004D2BA3 /* EXTScope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EXTScope.h; path = Externals/libextobjc/extobjc/EXTScope.h; sourceTree = "<group>"; };
+		03C67BC317268F74004D2BA3 /* EXTScope.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EXTScope.m; path = Externals/libextobjc/extobjc/EXTScope.m; sourceTree = "<group>"; };
+		03C67BC417268F74004D2BA3 /* metamacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = metamacros.h; path = Externals/libextobjc/extobjc/metamacros.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +81,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03C679BF17268BA9004D2BA3 /* SystemConfiguration.framework in Frameworks */,
+				03C679BD17268BA4004D2BA3 /* MobileCoreServices.framework in Frameworks */,
 				03C6792B172688AA004D2BA3 /* UIKit.framework in Frameworks */,
 				03C6792D172688AA004D2BA3 /* Foundation.framework in Frameworks */,
 				03C6792F172688AA004D2BA3 /* CoreGraphics.framework in Frameworks */,
@@ -57,6 +95,7 @@
 		03C6791E172688AA004D2BA3 = {
 			isa = PBXGroup;
 			children = (
+				03C6795417268B2A004D2BA3 /* Externals */,
 				03C67930172688AA004D2BA3 /* NPRImageView */,
 				03C67929172688AA004D2BA3 /* Frameworks */,
 				03C67928172688AA004D2BA3 /* Products */,
@@ -74,6 +113,8 @@
 		03C67929172688AA004D2BA3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				03C679BE17268BA9004D2BA3 /* SystemConfiguration.framework */,
+				03C679BC17268BA4004D2BA3 /* MobileCoreServices.framework */,
 				03C6792A172688AA004D2BA3 /* UIKit.framework */,
 				03C6792C172688AA004D2BA3 /* Foundation.framework */,
 				03C6792E172688AA004D2BA3 /* CoreGraphics.framework */,
@@ -115,6 +156,51 @@
 				03C6795117268979004D2BA3 /* NPImageView.m */,
 			);
 			name = NPImageView;
+			sourceTree = "<group>";
+		};
+		03C6795417268B2A004D2BA3 /* Externals */ = {
+			isa = PBXGroup;
+			children = (
+				03C67BC017268F4B004D2BA3 /* libextobjc */,
+				03C6795517268B30004D2BA3 /* AFNetworking */,
+			);
+			name = Externals;
+			sourceTree = "<group>";
+		};
+		03C6795517268B30004D2BA3 /* AFNetworking */ = {
+			isa = PBXGroup;
+			children = (
+				03C6795617268B51004D2BA3 /* AFHTTPClient.h */,
+				03C6795717268B51004D2BA3 /* AFHTTPClient.m */,
+				03C6795817268B51004D2BA3 /* AFHTTPRequestOperation.h */,
+				03C6795917268B51004D2BA3 /* AFHTTPRequestOperation.m */,
+				03C6795A17268B51004D2BA3 /* AFImageRequestOperation.h */,
+				03C6795B17268B51004D2BA3 /* AFImageRequestOperation.m */,
+				03C6795C17268B51004D2BA3 /* AFJSONRequestOperation.h */,
+				03C6795D17268B51004D2BA3 /* AFJSONRequestOperation.m */,
+				03C6795E17268B51004D2BA3 /* AFNetworkActivityIndicatorManager.h */,
+				03C6795F17268B51004D2BA3 /* AFNetworkActivityIndicatorManager.m */,
+				03C6796017268B51004D2BA3 /* AFNetworking.h */,
+				03C6796117268B51004D2BA3 /* AFPropertyListRequestOperation.h */,
+				03C6796217268B51004D2BA3 /* AFPropertyListRequestOperation.m */,
+				03C6796317268B51004D2BA3 /* AFURLConnectionOperation.h */,
+				03C6796417268B51004D2BA3 /* AFURLConnectionOperation.m */,
+				03C6796517268B51004D2BA3 /* AFXMLRequestOperation.h */,
+				03C6796617268B51004D2BA3 /* AFXMLRequestOperation.m */,
+				03C6796717268B51004D2BA3 /* UIImageView+AFNetworking.h */,
+				03C6796817268B51004D2BA3 /* UIImageView+AFNetworking.m */,
+			);
+			name = AFNetworking;
+			sourceTree = "<group>";
+		};
+		03C67BC017268F4B004D2BA3 /* libextobjc */ = {
+			isa = PBXGroup;
+			children = (
+				03C67BC217268F74004D2BA3 /* EXTScope.h */,
+				03C67BC317268F74004D2BA3 /* EXTScope.m */,
+				03C67BC417268F74004D2BA3 /* metamacros.h */,
+			);
+			name = libextobjc;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -186,6 +272,16 @@
 				03C6793B172688AA004D2BA3 /* AppDelegate.m in Sources */,
 				03C6794F172688D7004D2BA3 /* ExampleViewController.m in Sources */,
 				03C6795217268979004D2BA3 /* NPImageView.m in Sources */,
+				03C6796917268B51004D2BA3 /* AFHTTPClient.m in Sources */,
+				03C6796A17268B51004D2BA3 /* AFHTTPRequestOperation.m in Sources */,
+				03C6796B17268B51004D2BA3 /* AFImageRequestOperation.m in Sources */,
+				03C6796C17268B51004D2BA3 /* AFJSONRequestOperation.m in Sources */,
+				03C6796D17268B51004D2BA3 /* AFNetworkActivityIndicatorManager.m in Sources */,
+				03C6796E17268B51004D2BA3 /* AFPropertyListRequestOperation.m in Sources */,
+				03C6796F17268B51004D2BA3 /* AFURLConnectionOperation.m in Sources */,
+				03C6797017268B51004D2BA3 /* AFXMLRequestOperation.m in Sources */,
+				03C6797117268B51004D2BA3 /* UIImageView+AFNetworking.m in Sources */,
+				03C67BC517268F74004D2BA3 /* EXTScope.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -264,7 +360,12 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NPRImageView/NPRImageView-Prefix.pch";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/Externals/libextobjc/libffi/ios/include";
 				INFOPLIST_FILE = "NPRImageView/NPRImageView-Info.plist";
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -275,7 +376,12 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NPRImageView/NPRImageView-Prefix.pch";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/Externals/libextobjc/libffi/ios/include";
 				INFOPLIST_FILE = "NPRImageView/NPRImageView-Info.plist";
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

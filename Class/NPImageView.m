@@ -8,6 +8,9 @@
 
 #import "NPImageView.h"
 
+#import "EXTScope.h"
+#import "AFImageRequestOperation.h"
+
 @implementation NPImageView
 
 - (id)initWithFrame:(CGRect)frame
