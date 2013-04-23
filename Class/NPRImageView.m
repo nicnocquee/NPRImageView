@@ -252,6 +252,23 @@
     self.customImageView.image = self.placeholderImage;
 }
 
+- (void)continueImageProcessingFromDiskWithKey:(NSString *)key processingKey:(NSString *)processKey {
+    if (!self.shouldHideIndicatorView) {
+        [self.indicatorView startAnimating];
+        [self.indicatorView setHidden:NO];
+    }
+    
+    [self showPlaceholderImage];
+    @weakify(self);
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        @strongify(self);
+        UIImage *image = [self imageFromDiskWithKey:key];
+        if (image) {
+            [self processImage:image key:processKey];
+        }
+    });
+}
+
 - (void)queueImageForProcessing {
     // check if image exists in cache
     UIImage *processedImage = [self cachedProcessImageForKey:self.cacheKey];
@@ -259,24 +276,21 @@
         self.customImageView.image = processedImage;
         return;
     } else {
-        // check if image exists on disk
+        // check if processed image exists on disk
         if ([self imageExistsOnDiskWithKey:self.cacheKey]) {
-            if (!self.shouldHideIndicatorView) {
-                [self.indicatorView startAnimating];
-                [self.indicatorView setHidden:NO];
-            }
-            NSString *key = self.cacheKey;
-            [self showPlaceholderImage];
-            @weakify(self);
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-                @strongify(self);
-                UIImage *image = [self imageFromDiskWithKey:key];
-                if (image) {
-                    [self processImage:image key:key];
-                }
-            });
+            [self continueImageProcessingFromDiskWithKey:self.cacheKey
+                                           processingKey:self.cacheKey];
             return;
         }
+        // check if original image exists on disk
+        else {
+            if ([self imageExistsOnDiskWithKey:self.imageContentURL.absoluteString]) {
+                [self continueImageProcessingFromDiskWithKey:self.imageContentURL.absoluteString
+                                           processingKey:self.cacheKey];
+                return;
+            }
+        }
+        
     }
     
     // image cannot be found on disk nor cache. Let's download it.
@@ -325,6 +339,7 @@
         @strongify(self);
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if (responseObject) {
+                [self writeImageToDisk:responseObject key:operation.request.URL.absoluteString];
                 [self processImage:responseObject key:[self cacheKeyWithURL:operation.request.URL.absoluteString]];
             } else {
                 [self setProcessedImageOnMainThread:@[[NSNull null], operation.request.URL.absoluteString, operation.request.URL.absoluteString]];
@@ -492,7 +507,7 @@
     NSString *hashKey = [NSString stringWithFormat:@"%d", [key hash]];
     if (![self imageExistsOnDiskWithKey:key]) {
         NSData *data = UIImagePNGRepresentation(image);
-        NSString *filePath = [self filePathWithKey:hashKey];
+        NSString *filePath = [self filePathWithKey:key];
         
         NSError *error;
         [data writeToFile:filePath options:NSDataWritingAtomic error:&error];
@@ -505,12 +520,13 @@
 }
 
 - (NSString *)filePathWithKey:(NSString *)key{
-    return [self.cacheDirectoryPath stringByAppendingPathComponent:key];
+    return [self.cacheDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", [key hash]]];
 }
 
 - (BOOL)imageExistsOnDiskWithKey:(NSString *)key{
-	if(self.diskKeys) return [self.diskKeys objectForKey:key]==nil ? NO : YES;
-    return [[NSFileManager defaultManager] fileExistsAtPath:[self filePathWithKey:key]];
+    NSString *hashedKey = [NSString stringWithFormat:@"%d", [key hash]];
+	if(self.diskKeys) return [self.diskKeys objectForKey:hashedKey]==nil ? NO : YES;
+    return [[NSFileManager defaultManager] fileExistsAtPath:hashedKey];
 }
 
 - (UIImage*)imageFromDiskWithKey:(NSString*)key{
@@ -525,7 +541,7 @@
 }
 
 - (NSString *)cacheKeyWithURL:(NSString *)url {
-    return [NSString stringWithFormat:@"%d_%i", [url hash], self.contentMode];
+    return [NSString stringWithFormat:@"%@_%i", url, self.contentMode];
 }
 
 - (UIImage *)cachedProcessImageForKey:(NSString *)key {
