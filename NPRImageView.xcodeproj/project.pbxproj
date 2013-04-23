@@ -31,6 +31,9 @@
 		03C679BF17268BA9004D2BA3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03C679BE17268BA9004D2BA3 /* SystemConfiguration.framework */; };
 		03C67BC517268F74004D2BA3 /* EXTScope.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C67BC317268F74004D2BA3 /* EXTScope.m */; };
 		03C67BC8172690BB004D2BA3 /* ImageViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C67BC6172690BB004D2BA3 /* ImageViewCell.m */; };
+		03C67BCF17269A75004D2BA3 /* placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C67BCD17269A75004D2BA3 /* placeholder.png */; };
+		03C67BD017269A75004D2BA3 /* placeholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C67BCE17269A75004D2BA3 /* placeholder@2x.png */; };
+		03C67BD317269B25004D2BA3 /* UIImage+FX.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C67BD117269B25004D2BA3 /* UIImage+FX.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -77,6 +80,10 @@
 		03C67BC417268F74004D2BA3 /* metamacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = metamacros.h; path = Externals/libextobjc/extobjc/metamacros.h; sourceTree = "<group>"; };
 		03C67BC6172690BB004D2BA3 /* ImageViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageViewCell.m; sourceTree = "<group>"; };
 		03C67BC7172690BB004D2BA3 /* ImageViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageViewCell.h; sourceTree = "<group>"; };
+		03C67BCD17269A75004D2BA3 /* placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = placeholder.png; sourceTree = "<group>"; };
+		03C67BCE17269A75004D2BA3 /* placeholder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "placeholder@2x.png"; sourceTree = "<group>"; };
+		03C67BD117269B25004D2BA3 /* UIImage+FX.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+FX.m"; path = "Class/UIImage+FX.m"; sourceTree = SOURCE_ROOT; };
+		03C67BD217269B25004D2BA3 /* UIImage+FX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+FX.h"; path = "Class/UIImage+FX.h"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,8 +135,8 @@
 		03C67930172688AA004D2BA3 /* NPRImageView */ = {
 			isa = PBXGroup;
 			children = (
-				03C67BC6172690BB004D2BA3 /* ImageViewCell.m */,
 				03C67BC7172690BB004D2BA3 /* ImageViewCell.h */,
+				03C67BC6172690BB004D2BA3 /* ImageViewCell.m */,
 				03C67939172688AA004D2BA3 /* AppDelegate.h */,
 				03C6793A172688AA004D2BA3 /* AppDelegate.m */,
 				03C67931172688AA004D2BA3 /* Supporting Files */,
@@ -143,6 +150,8 @@
 		03C67931172688AA004D2BA3 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				03C67BCD17269A75004D2BA3 /* placeholder.png */,
+				03C67BCE17269A75004D2BA3 /* placeholder@2x.png */,
 				03C67932172688AA004D2BA3 /* NPRImageView-Info.plist */,
 				03C67933172688AA004D2BA3 /* InfoPlist.strings */,
 				03C67936172688AA004D2BA3 /* main.m */,
@@ -157,6 +166,8 @@
 		03C6795317268981004D2BA3 /* NPRImageView */ = {
 			isa = PBXGroup;
 			children = (
+				03C67BD117269B25004D2BA3 /* UIImage+FX.m */,
+				03C67BD217269B25004D2BA3 /* UIImage+FX.h */,
 				03C6795017268979004D2BA3 /* NPRImageView.h */,
 				03C6795117268979004D2BA3 /* NPRImageView.m */,
 			);
@@ -263,6 +274,8 @@
 				03C6793D172688AA004D2BA3 /* Default.png in Resources */,
 				03C6793F172688AA004D2BA3 /* Default@2x.png in Resources */,
 				03C67941172688AA004D2BA3 /* Default-568h@2x.png in Resources */,
+				03C67BCF17269A75004D2BA3 /* placeholder.png in Resources */,
+				03C67BD017269A75004D2BA3 /* placeholder@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,6 +301,7 @@
 				03C6797117268B51004D2BA3 /* UIImageView+AFNetworking.m in Sources */,
 				03C67BC517268F74004D2BA3 /* EXTScope.m in Sources */,
 				03C67BC8172690BB004D2BA3 /* ImageViewCell.m in Sources */,
+				03C67BD317269B25004D2BA3 /* UIImage+FX.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
