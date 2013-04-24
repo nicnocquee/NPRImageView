@@ -433,6 +433,7 @@
                 [self.messageLabel setText:NSLocalizedString(@"Image cannot be downloaded. Tap to reload.", nil)];
                 [self.messageLabel setHidden:NO];
                 [self.indicatorView stopAnimating];
+                [self.progressView setHidden:YES];
                 [self setNeedsLayout];
             });
             

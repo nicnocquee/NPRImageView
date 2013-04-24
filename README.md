@@ -8,7 +8,8 @@ Instagram-like UIImageView subclass. Progress view and activity view appear duri
 2. Customizable progress view and activity view. Simply set your custom progress view and activity view.
 3. Tap image view to reload.
 4. Show network activity while downloading images.
-4. Very simple to use. Just one line of code. Or more.
+5. ARC.
+6. Very simple to use. Just one line of code. Or more.
 
 ## Screenshots
 
