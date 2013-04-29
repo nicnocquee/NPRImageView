@@ -17,7 +17,7 @@
 #pragma mark -
 #pragma mark - Class extensions
 
-@interface NPRImageView ()
+@interface NPRImageView () <UIGestureRecognizerDelegate>
 
 + (NSOperationQueue *)processingQueue;
 + (NSCache *)processedImageCache;
@@ -230,8 +230,11 @@
     self.cacheDirectoryName = @"nprimageviewCache";
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapped:)];
-    [_customImageView addGestureRecognizer:tapGesture];
+    [tapGesture setDelegate:self];
+    tapGesture.cancelsTouchesInView = NO;
+    [_customImageView setOpaque:NO];
     [_customImageView setUserInteractionEnabled:YES];
+    [self addGestureRecognizer:tapGesture];
     [self setUserInteractionEnabled:YES];
 }
 
@@ -245,6 +248,10 @@
         [self setNeedsLayout];
         [self performSelector:@selector(queueImageForProcessing) withObject:nil afterDelay:1];
     }
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
 }
 
 #pragma mark - Layout
