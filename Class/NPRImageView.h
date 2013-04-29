@@ -19,4 +19,6 @@
 
 - (void)setImageWithContentsOfURL:(NSURL *)URL placeholderImage:(UIImage *)placeholderImage;
 
++ (UIImage *)originalImageForKey:(NSString *)key;
+
 @end

@@ -22,11 +22,7 @@
 + (NSOperationQueue *)processingQueue;
 + (NSCache *)processedImageCache;
 
-@property (strong,nonatomic) NSString *cacheDirectoryName;
-@property (strong,nonatomic) NSString *cacheDirectoryPath;
-
 @property (nonatomic, strong) NSURL *imageContentURL;
-@property (nonatomic, strong) NSMutableDictionary *diskKeys;
 @property (nonatomic, strong) UIImageView *customImageView;
 @property (nonatomic, strong) NSString *cacheKey;
 
@@ -53,8 +49,102 @@
 
 @end
 
+@interface NPRDiskCache : NSObject
+
++ (NPRDiskCache *)sharedDiskCache;
+
+@property (strong,nonatomic) NSString *cacheDirectoryName;
+@property (strong,nonatomic) NSString *cacheDirectoryPath;
+@property (strong, nonatomic) NSMutableDictionary *diskKeys;
+
+@end
+
 #pragma mark -
 #pragma mark - Class Implementations
+
+@implementation NPRDiskCache
+
++ (NPRDiskCache *)sharedDiskCache {
+    static NPRDiskCache *sharedDiskCache = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedDiskCache = [[NPRDiskCache alloc] init];
+    });
+    return sharedDiskCache;
+}
+
+- (void)writeImageToDisk:(UIImage *)image key:(NSString *)key{
+    NSString *hashKey = [NSString stringWithFormat:@"%d", [key hash]];
+    if (![self imageExistsOnDiskWithKey:key]) {
+        NSData *data = UIImagePNGRepresentation(image);
+        NSString *filePath = [self filePathWithKey:key];
+        
+        NSError *error;
+        [data writeToFile:filePath options:NSDataWritingAtomic error:&error];
+        if (error) {
+            NSLog(@"Cannot write image %@ to path %@", key, filePath);
+        } else {
+            [self.diskKeys setObject:[NSNull null] forKey:hashKey];
+        }
+    }
+}
+
+- (NSString *)filePathWithKey:(NSString *)key{
+    return [self.cacheDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", [key hash]]];
+}
+
+- (BOOL)imageExistsOnDiskWithKey:(NSString *)key{
+    NSString *hashedKey = [NSString stringWithFormat:@"%d", [key hash]];
+	if(self.diskKeys) return [self.diskKeys objectForKey:hashedKey]==nil ? NO : YES;
+    return [[NSFileManager defaultManager] fileExistsAtPath:hashedKey];
+}
+
+- (UIImage*)imageFromDiskWithKey:(NSString*)key{
+	NSData *data = [NSData dataWithContentsOfFile:[self filePathWithKey:key]];
+	return [[UIImage alloc] initWithData:data];
+}
+
+#pragma mark - Path Methods
+
+- (void)setupFolderDirectory {
+	NSFileManager *fileManager = [NSFileManager defaultManager];
+	NSString *path = self.cacheDirectoryPath;
+	
+	BOOL isDirectory = NO;
+	BOOL folderExists = [fileManager fileExistsAtPath:path isDirectory:&isDirectory] && isDirectory;
+	
+	if (!folderExists){
+		NSError *error = nil;
+		[fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error];
+	}
+}
+
+- (void)setCacheDirectoryName:(NSString *)cacheDirectoryName {
+    if (_cacheDirectoryName != cacheDirectoryName) {
+        _cacheDirectoryName = cacheDirectoryName;
+        if(!self.cacheDirectoryPath){
+            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+            NSString *documentsDirectory = [paths objectAtIndex:0];
+            NSString *str = [documentsDirectory stringByAppendingPathComponent:_cacheDirectoryName];
+            self.cacheDirectoryPath = str;
+        }
+        
+        [self setupFolderDirectory];
+        
+        NSError* error = nil;
+        NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.cacheDirectoryPath error:&error];
+        
+        if(error) return;
+        
+        NSMutableArray *ar = [NSMutableArray arrayWithCapacity:files.count];
+        for(NSObject *obj in files)
+            [ar addObject:[NSNull null]];
+        
+        self.diskKeys = [[NSMutableDictionary alloc] initWithObjects:ar forKeys:files];
+    }
+}
+
+@end
 
 @implementation NPRFailDownloadArray
 
@@ -227,7 +317,7 @@
     
     [[NSOperationQueueObserver sharedQueueObserver] observe];
     
-    self.cacheDirectoryName = @"nprimageviewCache";
+    [[NPRDiskCache sharedDiskCache] setCacheDirectoryName:@"nprimageviewCache"];
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapped:)];
     [tapGesture setDelegate:self];
@@ -283,6 +373,12 @@
         [self.messageLabel sizeToFit];
         [self.messageLabel setCenter:CGPointMake(CGRectGetWidth(self.frame)/2, CGRectGetHeight(self.frame)/2)];
     }
+}
+
+#pragma mark - Getter
+
++ (UIImage *)originalImageForKey:(NSString *)key {
+    return [[NPRDiskCache sharedDiskCache] imageFromDiskWithKey:key];
 }
 
 #pragma mark - Setter
@@ -347,7 +443,7 @@
     @weakify(self);
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         @strongify(self);
-        UIImage *image = [self imageFromDiskWithKey:key];
+        UIImage *image = [[NPRDiskCache sharedDiskCache] imageFromDiskWithKey:key];
         if (image) {
             [self processImage:image key:processKey];
         }
@@ -362,16 +458,16 @@
         return;
     } else {
         // check if processed image exists on disk
-        if ([self imageExistsOnDiskWithKey:self.cacheKey]) {
+        if ([[NPRDiskCache sharedDiskCache] imageExistsOnDiskWithKey:self.cacheKey]) {
             [self continueImageProcessingFromDiskWithKey:self.cacheKey
                                            processingKey:self.cacheKey];
             return;
         }
         // check if original image exists on disk
         else {
-            if ([self imageExistsOnDiskWithKey:self.imageContentURL.absoluteString]) {
+            if ([[NPRDiskCache sharedDiskCache] imageExistsOnDiskWithKey:self.imageContentURL.absoluteString]) {
                 [self continueImageProcessingFromDiskWithKey:self.imageContentURL.absoluteString
-                                           processingKey:self.cacheKey];
+                                               processingKey:self.cacheKey];
                 return;
             }
         }
@@ -425,7 +521,7 @@
         @strongify(self);
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if (responseObject) {
-                [self writeImageToDisk:responseObject key:operation.request.URL.absoluteString];
+                [[NPRDiskCache sharedDiskCache] writeImageToDisk:responseObject key:operation.request.URL.absoluteString];
                 [self processImage:responseObject key:[self cacheKeyWithURL:operation.request.URL.absoluteString]];
             } else {
                 [self setProcessedImageOnMainThread:@[[NSNull null], operation.request.URL.absoluteString, operation.request.URL.absoluteString]];
@@ -551,78 +647,6 @@
     });
 }
 
-#pragma mark - Path Methods
-
-- (void)setupFolderDirectory {
-	NSFileManager *fileManager = [NSFileManager defaultManager];
-	NSString *path = self.cacheDirectoryPath;
-	
-	BOOL isDirectory = NO;
-	BOOL folderExists = [fileManager fileExistsAtPath:path isDirectory:&isDirectory] && isDirectory;
-	
-	if (!folderExists){
-		NSError *error = nil;
-		[fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error];
-	}
-}
-
-- (void)setCacheDirectoryName:(NSString *)cacheDirectoryName {
-    if (_cacheDirectoryName != cacheDirectoryName) {
-        _cacheDirectoryName = cacheDirectoryName;
-        if(!self.cacheDirectoryPath){
-            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-            NSString *documentsDirectory = [paths objectAtIndex:0];
-            NSString *str = [documentsDirectory stringByAppendingPathComponent:_cacheDirectoryName];
-            self.cacheDirectoryPath = str;
-        }
-        
-        [self setupFolderDirectory];
-        
-        NSError* error = nil;
-        NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.cacheDirectoryPath error:&error];
-        
-        if(error) return;
-        
-        NSMutableArray *ar = [NSMutableArray arrayWithCapacity:files.count];
-        for(NSObject *obj in files)
-            [ar addObject:[NSNull null]];
-        
-        self.diskKeys = [[NSMutableDictionary alloc] initWithObjects:ar forKeys:files];
-    }
-}
-
-#pragma mark - Disk Caches
-
-- (void)writeImageToDisk:(UIImage *)image key:(NSString *)key{
-    NSString *hashKey = [NSString stringWithFormat:@"%d", [key hash]];
-    if (![self imageExistsOnDiskWithKey:key]) {
-        NSData *data = UIImagePNGRepresentation(image);
-        NSString *filePath = [self filePathWithKey:key];
-        
-        NSError *error;
-        [data writeToFile:filePath options:NSDataWritingAtomic error:&error];
-        if (error) {
-            NSLog(@"Cannot write image %@ to path %@", key, filePath);
-        } else {
-            [self.diskKeys setObject:[NSNull null] forKey:hashKey];
-        }
-    }
-}
-
-- (NSString *)filePathWithKey:(NSString *)key{
-    return [self.cacheDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", [key hash]]];
-}
-
-- (BOOL)imageExistsOnDiskWithKey:(NSString *)key{
-    NSString *hashedKey = [NSString stringWithFormat:@"%d", [key hash]];
-	if(self.diskKeys) return [self.diskKeys objectForKey:hashedKey]==nil ? NO : YES;
-    return [[NSFileManager defaultManager] fileExistsAtPath:hashedKey];
-}
-
-- (UIImage*)imageFromDiskWithKey:(NSString*)key{
-	NSData *data = [NSData dataWithContentsOfFile:[self filePathWithKey:key]];
-	return [[UIImage alloc] initWithData:data];
-}
 
 #pragma mark - Cache
 
@@ -640,7 +664,7 @@
 
 - (void)cacheProcessedImage:(UIImage *)processedImage forKey:(NSString *)cacheKey {
     [[[self class] processedImageCache] setObject:processedImage forKey:cacheKey];
-    [self writeImageToDisk:processedImage key:cacheKey];
+    [[NPRDiskCache sharedDiskCache] writeImageToDisk:processedImage key:cacheKey];
 }
 
 @end
