@@ -68,6 +68,7 @@
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     }
     [cell setImageURL:[self.images objectAtIndex:indexPath.row] placeholderImage:nil];
+    [cell.customTextLabel setText:[NSString stringWithFormat:@"Row %d", indexPath.row]];
     return cell;
 }
 

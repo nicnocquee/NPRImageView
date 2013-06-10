@@ -13,6 +13,8 @@
 #import <QuartzCore/QuartzCore.h>
 
 @interface ImageViewCell ()
+
+
 @end
 
 @implementation ImageViewCell
@@ -25,7 +27,19 @@
         [_nprImageView setAutoresizingMask:UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth];
         [_nprImageView setBackgroundColor:[UIColor whiteColor]];
         [_nprImageView setContentMode:UIViewContentModeScaleAspectFill];
+        
+        _customTextLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        [_customTextLabel setBackgroundColor:[UIColor clearColor]];
+        [_customTextLabel setFont:[UIFont boldSystemFontOfSize:25]];
+        [_customTextLabel setNumberOfLines:0];
+        [_customTextLabel setTextColor:[UIColor whiteColor]];
+        [_customTextLabel.layer setShadowColor:[UIColor darkGrayColor].CGColor];
+        [_customTextLabel.layer setShadowOffset:CGSizeMake(2, 2)];
+        [_customTextLabel.layer setShadowOpacity:0.6];
+        [_customTextLabel.layer setShadowRadius:1];
+        
         [self.contentView addSubview:_nprImageView];
+        [self.contentView addSubview:_customTextLabel];
     }
     return self;
 }
@@ -46,6 +60,13 @@
     [self.nprImageView.layer setShadowPath:[UIBezierPath bezierPathWithRect:_nprImageView.bounds].CGPath];
     [self.nprImageView.layer setShadowRadius:1];
     
+    CGFloat margin = 20;
+    CGRect frame = self.customTextLabel.frame;
+    frame.size.width = CGRectGetWidth(self.nprImageView.frame) - 2 * margin;
+    frame.origin.x = margin;
+    frame.origin.y = margin;
+    self.customTextLabel.frame = frame;
+    [self.customTextLabel sizeToFit];    
 }
 
 - (void)setImageURL:(NSURL *)imageURL placeholderImage:(UIImage *)placeholderImage{

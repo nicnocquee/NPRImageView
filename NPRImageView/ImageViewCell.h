@@ -13,6 +13,7 @@
 @interface ImageViewCell : UITableViewCell
 
 @property (nonatomic, strong) NPRImageView *nprImageView;
+@property (nonatomic, strong) UILabel *customTextLabel;
 
 - (void)setImageURL:(NSURL *)imageURL placeholderImage:(UIImage *)placeholderImage;
 
