@@ -28,6 +28,16 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "038F149D176EDE88007A62F9"
+               BuildableName = "NPRImageView Tests.xctest"
+               BlueprintName = "NPRImageView Tests"
+               ReferencedContainer = "container:NPRImageView.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

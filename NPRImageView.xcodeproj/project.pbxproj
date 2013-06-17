@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		038F14A0176EDE88007A62F9 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 038F149F176EDE88007A62F9 /* XCTest.framework */; };
+		038F14A1176EDE88007A62F9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03C6792C172688AA004D2BA3 /* Foundation.framework */; };
+		038F14A2176EDE88007A62F9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03C6792A172688AA004D2BA3 /* UIKit.framework */; };
+		038F14A8176EDE88007A62F9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 038F14A6176EDE88007A62F9 /* InfoPlist.strings */; };
+		038F14AA176EDE88007A62F9 /* NPRImageView_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 038F14A9176EDE88007A62F9 /* NPRImageView_Tests.m */; };
 		03C6792B172688AA004D2BA3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03C6792A172688AA004D2BA3 /* UIKit.framework */; };
 		03C6792D172688AA004D2BA3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03C6792C172688AA004D2BA3 /* Foundation.framework */; };
 		03C6792F172688AA004D2BA3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03C6792E172688AA004D2BA3 /* CoreGraphics.framework */; };
@@ -36,7 +41,23 @@
 		03C67BD317269B25004D2BA3 /* UIImage+FX.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C67BD117269B25004D2BA3 /* UIImage+FX.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		038F14AC176EDE88007A62F9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 03C6791F172688AA004D2BA3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 03C67926172688AA004D2BA3;
+			remoteInfo = NPRImageView;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		038F149E176EDE88007A62F9 /* NPRImageView Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "NPRImageView Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		038F149F176EDE88007A62F9 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		038F14A5176EDE88007A62F9 /* NPRImageView Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "NPRImageView Tests-Info.plist"; sourceTree = "<group>"; };
+		038F14A7176EDE88007A62F9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		038F14A9176EDE88007A62F9 /* NPRImageView_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NPRImageView_Tests.m; sourceTree = "<group>"; };
+		038F14AB176EDE88007A62F9 /* NPRImageView Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NPRImageView Tests-Prefix.pch"; sourceTree = "<group>"; };
 		03C67927172688AA004D2BA3 /* NPRImageView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NPRImageView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		03C6792A172688AA004D2BA3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		03C6792C172688AA004D2BA3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -87,6 +108,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		038F149B176EDE88007A62F9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				038F14A0176EDE88007A62F9 /* XCTest.framework in Frameworks */,
+				038F14A2176EDE88007A62F9 /* UIKit.framework in Frameworks */,
+				038F14A1176EDE88007A62F9 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		03C67924172688AA004D2BA3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -102,11 +133,31 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		038F14A3176EDE88007A62F9 /* NPRImageView Tests */ = {
+			isa = PBXGroup;
+			children = (
+				038F14A9176EDE88007A62F9 /* NPRImageView_Tests.m */,
+				038F14A4176EDE88007A62F9 /* Supporting Files */,
+			);
+			path = "NPRImageView Tests";
+			sourceTree = "<group>";
+		};
+		038F14A4176EDE88007A62F9 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				038F14A5176EDE88007A62F9 /* NPRImageView Tests-Info.plist */,
+				038F14A6176EDE88007A62F9 /* InfoPlist.strings */,
+				038F14AB176EDE88007A62F9 /* NPRImageView Tests-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		03C6791E172688AA004D2BA3 = {
 			isa = PBXGroup;
 			children = (
 				03C6795417268B2A004D2BA3 /* Externals */,
 				03C67930172688AA004D2BA3 /* NPRImageView */,
+				038F14A3176EDE88007A62F9 /* NPRImageView Tests */,
 				03C67929172688AA004D2BA3 /* Frameworks */,
 				03C67928172688AA004D2BA3 /* Products */,
 			);
@@ -116,6 +167,7 @@
 			isa = PBXGroup;
 			children = (
 				03C67927172688AA004D2BA3 /* NPRImageView.app */,
+				038F149E176EDE88007A62F9 /* NPRImageView Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -128,6 +180,7 @@
 				03C6792A172688AA004D2BA3 /* UIKit.framework */,
 				03C6792C172688AA004D2BA3 /* Foundation.framework */,
 				03C6792E172688AA004D2BA3 /* CoreGraphics.framework */,
+				038F149F176EDE88007A62F9 /* XCTest.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -222,6 +275,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		038F149D176EDE88007A62F9 /* NPRImageView Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 038F14B0176EDE88007A62F9 /* Build configuration list for PBXNativeTarget "NPRImageView Tests" */;
+			buildPhases = (
+				038F149A176EDE88007A62F9 /* Sources */,
+				038F149B176EDE88007A62F9 /* Frameworks */,
+				038F149C176EDE88007A62F9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				038F14AD176EDE88007A62F9 /* PBXTargetDependency */,
+			);
+			name = "NPRImageView Tests";
+			productName = "NPRImageView Tests";
+			productReference = 038F149E176EDE88007A62F9 /* NPRImageView Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		03C67926172688AA004D2BA3 /* NPRImageView */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 03C6794A172688AA004D2BA3 /* Build configuration list for PBXNativeTarget "NPRImageView" */;
@@ -247,6 +318,11 @@
 			attributes = {
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = Touches;
+				TargetAttributes = {
+					038F149D176EDE88007A62F9 = {
+						TestTargetID = 03C67926172688AA004D2BA3;
+					};
+				};
 			};
 			buildConfigurationList = 03C67922172688AA004D2BA3 /* Build configuration list for PBXProject "NPRImageView" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -261,11 +337,20 @@
 			projectRoot = "";
 			targets = (
 				03C67926172688AA004D2BA3 /* NPRImageView */,
+				038F149D176EDE88007A62F9 /* NPRImageView Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		038F149C176EDE88007A62F9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				038F14A8176EDE88007A62F9 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		03C67925172688AA004D2BA3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -282,6 +367,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		038F149A176EDE88007A62F9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				038F14AA176EDE88007A62F9 /* NPRImageView_Tests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		03C67923172688AA004D2BA3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -307,7 +400,23 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		038F14AD176EDE88007A62F9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 03C67926172688AA004D2BA3 /* NPRImageView */;
+			targetProxy = 038F14AC176EDE88007A62F9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
+		038F14A6176EDE88007A62F9 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				038F14A7176EDE88007A62F9 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		03C67933172688AA004D2BA3 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -319,6 +428,63 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		038F14AE176EDE88007A62F9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/NPRImageView.app/NPRImageView";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(SYSTEM_APPS_DIR)/Xcode5-DP.app/Contents/Developer/Library/Frameworks",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "NPRImageView Tests/NPRImageView Tests-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "NPRImageView Tests/NPRImageView Tests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		038F14AF176EDE88007A62F9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/NPRImageView.app/NPRImageView";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				ENABLE_NS_ASSERTIONS = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(SYSTEM_APPS_DIR)/Xcode5-DP.app/Contents/Developer/Library/Frameworks",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "NPRImageView Tests/NPRImageView Tests-Prefix.pch";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "NPRImageView Tests/NPRImageView Tests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
 		03C67948172688AA004D2BA3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -412,6 +578,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		038F14B0176EDE88007A62F9 /* Build configuration list for PBXNativeTarget "NPRImageView Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				038F14AE176EDE88007A62F9 /* Debug */,
+				038F14AF176EDE88007A62F9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		03C67922172688AA004D2BA3 /* Build configuration list for PBXProject "NPRImageView" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -428,6 +602,7 @@
 				03C6794C172688AA004D2BA3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
