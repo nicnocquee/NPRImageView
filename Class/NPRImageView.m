@@ -14,17 +14,15 @@
 
 #import <objc/message.h>
 
-#pragma mark -
-#pragma mark - Class extensions
+NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetImage";
 
 @interface NPRImageView () <UIGestureRecognizerDelegate>
 
 + (NSOperationQueue *)processingQueue;
 + (NSCache *)processedImageCache;
 
-@property (nonatomic, strong) NSURL *imageContentURL;
 @property (nonatomic, strong) UIImageView *customImageView;
-@property (nonatomic, strong) NSString *cacheKey;
+@property (nonatomic, strong) NSMutableArray *downloadingURLs;
 
 @end
 
@@ -49,7 +47,7 @@
 
 @end
 
-@interface NPRDiskCache : NSObject
+@interface NPRDiskCache()
 
 + (NPRDiskCache *)sharedDiskCache;
 
@@ -59,8 +57,7 @@
 
 @end
 
-#pragma mark -
-#pragma mark - Class Implementations
+#pragma mark - NPRDiskCache
 
 @implementation NPRDiskCache
 
@@ -104,8 +101,6 @@
 	return [[UIImage alloc] initWithData:data];
 }
 
-#pragma mark - Path Methods
-
 - (void)setupFolderDirectory {
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	NSString *path = self.cacheDirectoryPath;
@@ -145,6 +140,8 @@
 }
 
 @end
+
+#pragma mark - NPRFailDownloadArray
 
 @implementation NPRFailDownloadArray
 
@@ -195,6 +192,8 @@
 
 @end
 
+#pragma mark - NSOperationQueueObserver
+
 @implementation NSOperationQueueObserver
 
 + (NSOperationQueueObserver *)sharedQueueObserver {
@@ -217,9 +216,14 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"operationCount"]) {
         int operations = [[change objectForKey:@"new"] intValue];
+        // NSLog(@"%d operations in queue", operations);
         if (operations == 0) {
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         } else {
+            //NSLog(@"In queue: ");
+            //for (AFImageRequestOperation *operation in [[NPRImageView processingQueue] operations]) {
+            //    NSLog(@" ---- %@", operation.request.URL.absoluteString);
+            //}
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         }
     }
@@ -231,9 +235,9 @@
 
 @end
 
-@implementation NPRImageView
+#pragma mark - NPRImageView
 
-#pragma mark - Shared stuff
+@implementation NPRImageView
 
 + (NSOperationQueue *)processingQueue
 {
@@ -326,6 +330,8 @@
     [_customImageView setUserInteractionEnabled:YES];
     [self addGestureRecognizer:tapGesture];
     [self setUserInteractionEnabled:YES];
+    
+    _downloadingURLs = [NSMutableArray array];
 }
 
 #pragma mark - Gesture
@@ -381,10 +387,31 @@
     return [[NPRDiskCache sharedDiskCache] imageFromDiskWithKey:key];
 }
 
+- (UIImage *)image {
+    return self.customImageView.image;
+}
+
+- (NPRDiskCache *)sharedCache {
+    return [NPRDiskCache sharedDiskCache];
+}
+
+- (BOOL)isDownloadingImageAtURLString:(NSString *)urlString {
+    for (NSString *url in self.downloadingURLs) {
+        if ([url isEqualToString:urlString]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
 #pragma mark - Setter
 
+- (void)setImage:(UIImage *)image {
+    self.customImageView.image = image;
+}
+
 - (void)setImageWithContentsOfURL:(NSURL *)URL placeholderImage:(UIImage *)placeholderImage {
-    if (![URL isEqual:self.imageContentURL])
+    if (![URL.absoluteString isEqualToString:self.imageContentURL.absoluteString])
     {
         [self setCacheKeyWithURL:URL.absoluteString];
         
@@ -397,7 +424,11 @@
         
         self.placeholderImage = placeholderImage;
         
-        [self queueImageForProcessing];
+        [self queueImageForProcessingForURLString:URL.absoluteString];
+    } else {
+        if (![self isDownloadingImageAtURLString:URL.absoluteString]) {
+            [self.indicatorView stopAnimating];
+        }
     }
 }
 
@@ -433,45 +464,54 @@
     self.customImageView.image = self.placeholderImage;
 }
 
-- (void)continueImageProcessingFromDiskWithKey:(NSString *)key processingKey:(NSString *)processKey {
+- (void)continueImageProcessingFromDiskWithKey:(NSString *)key processingKey:(NSString *)processKey urlString:(NSString *)urlString{
     if (!self.shouldHideIndicatorView) {
         [self.indicatorView startAnimating];
         [self.indicatorView setHidden:NO];
     }
     
     [self showPlaceholderImage];
-    @weakify(self);
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        @strongify(self);
         UIImage *image = [[NPRDiskCache sharedDiskCache] imageFromDiskWithKey:key];
         if (image) {
-            [self processImage:image key:processKey];
+            UIImage *im = [self processImage:image key:processKey urlString:urlString];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self setProcessedImageOnMainThread:@[im, processKey, urlString]];
+            });
+            
+        } else {
+            NSLog(@"");
         }
     });
 }
 
-- (void)queueImageForProcessing {
+- (void)queueImageForProcessingForURLString:(NSString *)url {
     // check if image exists in cache
-    UIImage *processedImage = [self cachedProcessImageForKey:self.cacheKey];
+    NSString *key = [self cacheKeyWithURL:url];
+    UIImage *processedImage = [self cachedProcessImageForKey:key];
     if (processedImage) {
         self.customImageView.image = processedImage;
+        [self.indicatorView stopAnimating];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+            [notificationCenter postNotificationName:NPRDidSetImageNotification object:self];
+        });
         return;
     } else {
         // check if processed image exists on disk
-        if ([[NPRDiskCache sharedDiskCache] imageExistsOnDiskWithKey:self.cacheKey]) {
-            [self continueImageProcessingFromDiskWithKey:self.cacheKey
-                                           processingKey:self.cacheKey];
+        if ([[NPRDiskCache sharedDiskCache] imageExistsOnDiskWithKey:key]) {
+            [self continueImageProcessingFromDiskWithKey:key
+                                           processingKey:key urlString:url];
             return;
         }
         // check if original image exists on disk
         else {
-            if ([[NPRDiskCache sharedDiskCache] imageExistsOnDiskWithKey:self.imageContentURL.absoluteString]) {
-                [self continueImageProcessingFromDiskWithKey:self.imageContentURL.absoluteString
-                                               processingKey:self.cacheKey];
+            if ([[NPRDiskCache sharedDiskCache] imageExistsOnDiskWithKey:url]) {
+                [self continueImageProcessingFromDiskWithKey:url
+                                               processingKey:key urlString:url];
                 return;
             }
         }
-        
     }
     
     // image cannot be found on disk nor cache. Let's download it.
@@ -484,75 +524,67 @@
     [self.progressView setHidden:NO];
     
     @weakify(self);
-    
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.imageContentURL];
+    NSURL *urlToDownload = [NSURL URLWithString:url];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:urlToDownload];
     [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
-    AFImageRequestOperation *imageOperation = [[AFImageRequestOperation alloc] initWithRequest:request];
-    @weakify(imageOperation);
+    AFImageRequestOperation *imageOperation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
+        UIImage *im = [self processImage:image key:key urlString:url];
+        [[NPRDiskCache sharedDiskCache] writeImageToDisk:im key:url];
+        return im;
+    } success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+        [[NPRFailDownloadArray array] removeObject:request.URL.absoluteString];
+        [self.downloadingURLs removeObject:request.URL.absoluteString];
+        NSString *thisKey = [self cacheKeyWithURL:request.URL.absoluteString];
+        [self setProcessedImageOnMainThread:@[image,thisKey,request.URL.absoluteString]];
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+        [[NPRFailDownloadArray array] addObject:request.URL.absoluteString];
+        [self.downloadingURLs removeObject:request.URL.absoluteString];
+        if ([request.URL.absoluteString isEqualToString:url]) {
+            [self.messageLabel setText:NSLocalizedString(@"Image cannot be downloaded. Tap to reload.", nil)];
+            [self.messageLabel setHidden:NO];
+            [self.indicatorView stopAnimating];
+            [self.progressView setHidden:YES];
+            [self setNeedsLayout];
+            [self setProcessedImageOnMainThread:@[[NSNull null], request.URL.absoluteString, request.URL.absoluteString]];
+        }
+    }];
     
+    @weakify(imageOperation);
     [imageOperation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
         @strongify(self);
         @strongify(imageOperation);
         
-        if ([imageOperation.request.URL isEqual: self.imageContentURL]) {
-            if (![self cachedProcessImageForKey:imageOperation.request.URL.absoluteString]) {
-                if ((float)totalBytesRead/(float)totalBytesExpectedToRead  < 1) {
-                    [self.messageLabel setText:nil];
-                    [self.messageLabel setHidden:YES];
-                    
-                    if (!self.shouldHideIndicatorView) {
-                        [self.indicatorView startAnimating];
-                        [self.indicatorView setHidden:NO];
-                    }
-                }
-                [self.progressView setHidden:NO];
-                [self setNeedsLayout];
+        if ([imageOperation.request.URL.absoluteString isEqualToString: self.imageContentURL.absoluteString]) {
+            if ((float)totalBytesRead/(float)totalBytesExpectedToRead  < 1) {
+                [self.messageLabel setText:nil];
+                [self.messageLabel setHidden:YES];
                 
-                [self.progressView setProgress:(float)totalBytesRead/(float)totalBytesExpectedToRead animated:NO];
-                if (totalBytesRead == totalBytesExpectedToRead) {
-                    [self.progressView setHidden:YES];
+                if (!self.shouldHideIndicatorView) {
+                    [self.indicatorView startAnimating];
+                    [self.indicatorView setHidden:NO];
                 }
             }
-        }
-    }];
-    
-    [imageOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        [[NPRFailDownloadArray array] removeObject:operation.request.URL.absoluteString];
-        @strongify(self);
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            if (responseObject) {
-                [[NPRDiskCache sharedDiskCache] writeImageToDisk:responseObject key:operation.request.URL.absoluteString];
-                [self processImage:responseObject key:[self cacheKeyWithURL:operation.request.URL.absoluteString]];
-            } else {
-                [self setProcessedImageOnMainThread:@[[NSNull null], operation.request.URL.absoluteString, operation.request.URL.absoluteString]];
-            }
-        });
-        
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        [[NPRFailDownloadArray array] addObject:operation.request.URL.absoluteString];
-        if ([operation.request.URL.absoluteString isEqualToString:self.imageContentURL.absoluteString]) {
-            @strongify(self);
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.messageLabel setText:NSLocalizedString(@"Image cannot be downloaded. Tap to reload.", nil)];
-                [self.messageLabel setHidden:NO];
-                [self.indicatorView stopAnimating];
-                [self.progressView setHidden:YES];
-                [self setNeedsLayout];
-            });
+            [self.progressView setHidden:NO];
+            [self setNeedsLayout];
             
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [self setProcessedImageOnMainThread:@[[NSNull null], operation.request.URL.absoluteString, operation.request.URL.absoluteString]];
-            });
+            [self.progressView setProgress:(float)totalBytesRead/(float)totalBytesExpectedToRead animated:NO];
+            if (totalBytesRead == totalBytesExpectedToRead) {
+                [self.progressView setHidden:YES];
+            }
         }
     }];
     
-    [self queueProcessingOperation:imageOperation];
+    [self queueProcessingOperation:imageOperation urlString:url];
 }
 
-- (void)queueProcessingOperation:(NSOperation *)operation {
+- (void)queueProcessingOperation:(NSOperation *)operation urlString:(NSString *)urlString{
     //suspend operation queue
     NSOperationQueue *queue = [[self class] processingQueue];
     [queue setSuspended:YES];
+    
+    BOOL queued = NO;
+    
+    AFImageRequestOperation *queuedOperation;
     
     //check for existing operations
     if ([operation isKindOfClass:[AFImageRequestOperation class]]) {
@@ -561,39 +593,52 @@
             if ([op isKindOfClass:[AFImageRequestOperation class]])
             {
                 AFImageRequestOperation *oper = (AFImageRequestOperation *)operation;
-                if ([op.request isEqual:oper.request])
+                if ([op.request.URL.absoluteString isEqualToString:oper.request.URL.absoluteString])
                 {
                     //already queued
-                    [queue setSuspended:NO];
-                    return;
+                    queuedOperation = op;
+                    queued = YES;
+                    if ([op isExecuting]) {
+                        [queue setSuspended:NO];
+                        return;
+                    }
+                    break;
                 }
             }
         }
     }
     
     //make op a dependency of all queued ops
+    
     NSInteger maxOperations = ([queue maxConcurrentOperationCount] > 0) ? [queue maxConcurrentOperationCount]: INT_MAX;
     NSInteger index = [queue operationCount] - maxOperations;
     if (index >= 0)
     {
-        NSOperation *op = [[queue operations] objectAtIndex:index];
-        if (![op isExecuting])
+        AFImageRequestOperation *op = (AFImageRequestOperation *)[[queue operations] objectAtIndex:index];
+        AFImageRequestOperation *oper = (AFImageRequestOperation *)operation;
+        if (queuedOperation) {
+            oper = queuedOperation;
+        }
+        if ([op isReady] && ![op.request.URL.absoluteString isEqualToString:oper.request.URL.absoluteString])
         {
-            [operation removeDependency:op];
-            [op addDependency:operation];
+            [oper removeDependency:op];
+            [op addDependency:oper];
         }
     }
     
-    //add operation to queue
-    [queue addOperation:operation];
+    if (!queued) {
+        //add operation to queue
+        [self.downloadingURLs addObject:urlString];
+        [queue addOperation:operation];
+    }
     
     //resume queue
     [queue setSuspended:NO];
 }
 
-- (void)processImage:(UIImage *)image key:(NSString *)key {
+- (UIImage *)processImage:(UIImage *)image key:(NSString *)key urlString:(NSString *)url{
     //check cache
-    UIImage *processedImage = [self cachedProcessImageForKey:key];
+    UIImage *processedImage = (url)?[self cachedProcessImageForKey:key]:nil;
     if (!processedImage)
     {
         if (image) {
@@ -612,39 +657,71 @@
         [self cacheProcessedImage:processedImage forKey:key];
     }
     
-    // set image on main thread
-    [self setProcessedImageOnMainThread:@[processedImage?:[NSNull null], key]];
+    return processedImage;
 }
 
 - (void)setProcessedImageOnMainThread:(NSArray *)array {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSString *cacheKey = [array objectAtIndex:1];
-        UIImage *processedImage = [array objectAtIndex:0];
-        processedImage = ([processedImage isKindOfClass:[NSNull class]])? nil: processedImage;
+    UIImage *processedImage = [array objectAtIndex:0];
+    processedImage = ([processedImage isKindOfClass:[NSNull class]])? nil: processedImage;
+    
+    //set image
+    if ([self.imageContentURL.absoluteString isEqualToString:[array objectAtIndex:2]])
+    {
         
-        //set image
-        if ([self.cacheKey isEqualToString:cacheKey])
-        {
-            
-            // crossfade
-            id animation = objc_msgSend(NSClassFromString(@"CATransition"), @selector(animation));
-            objc_msgSend(animation, @selector(setType:), @"kCATransitionFade");
-            objc_msgSend(self.layer, @selector(addAnimation:forKey:), animation, nil);
-            
-            //set processed image
-            self.customImageView.image = processedImage;
-            
-            if (processedImage) {
-                [self.messageLabel setHidden:YES];
-            } else {
-                [self.messageLabel setHidden:NO];
-                [self setNeedsLayout];
-                [self layoutIfNeeded];
-            }
-            [self.progressView setHidden:YES];
-            [self.indicatorView stopAnimating];
+        // crossfade
+        id animation = objc_msgSend(NSClassFromString(@"CATransition"), @selector(animation));
+        objc_msgSend(animation, @selector(setType:), @"kCATransitionFade");
+        objc_msgSend(self.layer, @selector(addAnimation:forKey:), animation, nil);
+        
+        //set processed image
+        self.customImageView.image = processedImage;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+            [notificationCenter postNotificationName:NPRDidSetImageNotification object:self];
+        });
+        
+        if (processedImage) {
+            [self.messageLabel setHidden:YES];
+        } else {
+            [self.messageLabel setHidden:NO];
+            [self setNeedsLayout];
+            [self layoutIfNeeded];
         }
-    });
+        [self.progressView setHidden:YES];
+        [self.indicatorView stopAnimating];
+    } else {
+        NSLog(@"");
+    }
+}
+
++ (void)printOperations {
+    for (AFImageRequestOperation *operation in [NPRImageView processingQueue].operations) {
+        NSLog(@">> Operation %@ state: %@", operation.request.URL.absoluteString, [[self class] stateString:operation]);
+        [operation cancel];
+        return;
+        for (AFImageRequestOperation *dependecy in operation.dependencies) {
+            NSLog(@"     -- Dependency: %@ state: %@", dependecy.request.URL.absoluteString, [[self class] stateString:dependecy]);
+        }
+    }
+}
+
++ (NSString *)stateString:(AFImageRequestOperation *)operation {
+    if ([operation isCancelled]) {
+        return @"Cancelled";
+    } else if ([operation isExecuting]) {
+        return @"executing";
+    } else if ([operation isReady]) {
+        return @"ready";
+    } else if ([operation isPaused]) {
+        return @"paused";
+    } else if ([operation isFinished]) {
+        return @"finished";
+    }
+    return @"unknown";
+}
+
++ (void)cancelAllOperations {
+    [[NPRImageView processingQueue] cancelAllOperations];
 }
 
 
