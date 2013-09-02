@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "NPRImageView"
-  s.version      = "1.0.20"
+  s.version      = "1.0.2"
   s.summary      = "Instagram-like UIImageView subclass. Progress view and activity view appear during image download. Support memory and disk caching."
   
   s.description  = "Instagram-like UIImageView subclass. Progress view and activity view appear during image download. Support memory and disk caching. Inspired by [FXImageView](https://github.com/nicklockwood/FXImageView) and [Tapku](https://github.com/devinross/tapkulibrary)'s TKImageCache. Using AFNetworking.
