@@ -18,6 +18,7 @@ extern NSString * const NPRDidSetImageNotification;
 
 @interface NPRImageView : UIImageView
 
+@property (nonatomic, assign) BOOL crossFade;
 @property (nonatomic, strong) UIProgressView *progressView;
 @property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
 @property (nonatomic, strong) UILabel *messageLabel;

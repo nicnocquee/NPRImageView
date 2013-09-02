@@ -332,6 +332,8 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     [self setUserInteractionEnabled:YES];
     
     _downloadingURLs = [NSMutableArray array];
+    
+    self.crossFade = YES;
 }
 
 #pragma mark - Gesture
@@ -342,7 +344,7 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
         [self.indicatorView setHidden:NO];
         [self.messageLabel setHidden:YES];
         [self setNeedsLayout];
-        [self performSelector:@selector(queueImageForProcessing) withObject:nil afterDelay:1];
+        [self performSelector:@selector(queueImageForProcessingForURLString:) withObject:self.imageContentURL.absoluteString afterDelay:1];
     }
 }
 
@@ -669,9 +671,11 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     {
         
         // crossfade
-        id animation = objc_msgSend(NSClassFromString(@"CATransition"), @selector(animation));
-        objc_msgSend(animation, @selector(setType:), @"kCATransitionFade");
-        objc_msgSend(self.layer, @selector(addAnimation:forKey:), animation, nil);
+        if (self.crossFade) {
+            id animation = objc_msgSend(NSClassFromString(@"CATransition"), @selector(animation));
+            objc_msgSend(animation, @selector(setType:), @"kCATransitionFade");
+            objc_msgSend(self.layer, @selector(addAnimation:forKey:), animation, nil);
+        }
         
         //set processed image
         self.customImageView.image = processedImage;
