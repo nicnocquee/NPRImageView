@@ -22,6 +22,6 @@ Pod::Spec.new do |s|
   s.source_files = 'Class'
   s.requires_arc = true
   
-  s.dependency 'AFNetworking', '~> 1.2.1'
-  s.dependency 'libextobjc/EXTScope', '~> 0.2.5'
+  s.dependency 'AFNetworking', '~> 1.3.2'
+  s.dependency 'libextobjc/EXTScope', '~> 0.3.0'
 end
