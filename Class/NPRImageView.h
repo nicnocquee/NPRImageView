@@ -9,12 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @class NPRImageView;
+@class NPRDiskCache;
 
 extern NSString * const NPRDidSetImageNotification;
-
-@interface NPRDiskCache : NSObject
-- (BOOL)imageExistsOnDiskWithKey:(NSString *)key;
-@end
 
 @interface NPRImageView : UIImageView
 
@@ -36,6 +33,8 @@ extern NSString * const NPRDidSetImageNotification;
 
 - (BOOL)isDownloadingImageAtURLString:(NSString *)urlString;
 
++ (NSOperationQueue *)processingQueue;
++ (NSCache *)processedImageCache;
 + (void)printOperations;
 + (void)cancelAllOperations;
 

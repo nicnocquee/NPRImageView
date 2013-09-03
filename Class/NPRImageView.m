@@ -12,228 +12,21 @@
 #import "AFImageRequestOperation.h"
 #import "UIImage+FX.h"
 
+#import "NPROperationQueueObserver.h"
+#import "NPRDiskCache.h"
+#import "NPRFailDownloadArray.h"
+
 #import <objc/message.h>
 
 NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetImage";
 
 @interface NPRImageView () <UIGestureRecognizerDelegate>
 
-+ (NSOperationQueue *)processingQueue;
-+ (NSCache *)processedImageCache;
-
 @property (nonatomic, strong) UIImageView *customImageView;
 @property (nonatomic, strong) NSMutableArray *downloadingURLs;
 
 @end
 
-@interface NSOperationQueueObserver : NSObject
-
-+ (NSOperationQueueObserver *)sharedQueueObserver;
-- (void)observe;
-
-@property (nonatomic, getter = isObserving) BOOL observing;
-
-@end
-
-@interface NPRFailDownloadArray : NSObject
-
-@property (nonatomic, strong) NSMutableArray *mutableArray;
-
-+ (NPRFailDownloadArray *)array;
-- (BOOL)contains:(id)object;
-- (void)addObject:(id)object;
-- (void)removeObject:(id)object;
-- (NSInteger)count;
-
-@end
-
-@interface NPRDiskCache()
-
-+ (NPRDiskCache *)sharedDiskCache;
-
-@property (strong,nonatomic) NSString *cacheDirectoryName;
-@property (strong,nonatomic) NSString *cacheDirectoryPath;
-@property (strong, nonatomic) NSMutableDictionary *diskKeys;
-
-@end
-
-#pragma mark - NPRDiskCache
-
-@implementation NPRDiskCache
-
-+ (NPRDiskCache *)sharedDiskCache {
-    static NPRDiskCache *sharedDiskCache = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedDiskCache = [[NPRDiskCache alloc] init];
-    });
-    return sharedDiskCache;
-}
-
-- (void)writeImageToDisk:(UIImage *)image key:(NSString *)key{
-    NSString *hashKey = [NSString stringWithFormat:@"%d", [key hash]];
-    if (![self imageExistsOnDiskWithKey:key]) {
-        NSData *data = UIImagePNGRepresentation(image);
-        NSString *filePath = [self filePathWithKey:key];
-        
-        NSError *error;
-        [data writeToFile:filePath options:NSDataWritingAtomic error:&error];
-        if (error) {
-            NSLog(@"Cannot write image %@ to path %@", key, filePath);
-        } else {
-            [self.diskKeys setObject:[NSNull null] forKey:hashKey];
-        }
-    }
-}
-
-- (NSString *)filePathWithKey:(NSString *)key{
-    return [self.cacheDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", [key hash]]];
-}
-
-- (BOOL)imageExistsOnDiskWithKey:(NSString *)key{
-    NSString *hashedKey = [NSString stringWithFormat:@"%d", [key hash]];
-	if(self.diskKeys) return [self.diskKeys objectForKey:hashedKey]==nil ? NO : YES;
-    return [[NSFileManager defaultManager] fileExistsAtPath:hashedKey];
-}
-
-- (UIImage*)imageFromDiskWithKey:(NSString*)key{
-	NSData *data = [NSData dataWithContentsOfFile:[self filePathWithKey:key]];
-	return [[UIImage alloc] initWithData:data];
-}
-
-- (void)setupFolderDirectory {
-	NSFileManager *fileManager = [NSFileManager defaultManager];
-	NSString *path = self.cacheDirectoryPath;
-	
-	BOOL isDirectory = NO;
-	BOOL folderExists = [fileManager fileExistsAtPath:path isDirectory:&isDirectory] && isDirectory;
-	
-	if (!folderExists){
-		NSError *error = nil;
-		[fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error];
-	}
-}
-
-- (void)setCacheDirectoryName:(NSString *)cacheDirectoryName {
-    if (_cacheDirectoryName != cacheDirectoryName) {
-        _cacheDirectoryName = cacheDirectoryName;
-        if(!self.cacheDirectoryPath){
-            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-            NSString *documentsDirectory = [paths objectAtIndex:0];
-            NSString *str = [documentsDirectory stringByAppendingPathComponent:_cacheDirectoryName];
-            self.cacheDirectoryPath = str;
-        }
-        
-        [self setupFolderDirectory];
-        
-        NSError* error = nil;
-        NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.cacheDirectoryPath error:&error];
-        
-        if(error) return;
-        
-        NSMutableArray *ar = [NSMutableArray arrayWithCapacity:files.count];
-        for(NSObject *obj in files)
-            [ar addObject:[NSNull null]];
-        
-        self.diskKeys = [[NSMutableDictionary alloc] initWithObjects:ar forKeys:files];
-    }
-}
-
-@end
-
-#pragma mark - NPRFailDownloadArray
-
-@implementation NPRFailDownloadArray
-
-+ (NPRFailDownloadArray *)array {
-    static NPRFailDownloadArray *failArray = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        failArray = [[NPRFailDownloadArray alloc] init];
-    });
-    return failArray;
-}
-
-- (id)init {
-    self = [super init];
-    if (self) {
-        _mutableArray = [NSMutableArray array];
-    }
-    return self;
-}
-
-- (BOOL)contains:(id)object {
-    @synchronized(self) {
-        return [self.mutableArray containsObject:object];
-    }
-}
-
-- (void)addObject:(id)object {
-    @synchronized(self) {
-        if (![self.mutableArray containsObject:object]) {
-            [self.mutableArray addObject:object];
-        }
-    }
-}
-
-- (void)removeObject:(id)object {
-    @synchronized(self) {
-        if ([self.mutableArray containsObject:object]) {
-            [self.mutableArray removeObject:object];
-        }
-    }
-}
-
-- (NSInteger)count {
-    @synchronized(self) {
-        return self.mutableArray.count;
-    }
-}
-
-@end
-
-#pragma mark - NSOperationQueueObserver
-
-@implementation NSOperationQueueObserver
-
-+ (NSOperationQueueObserver *)sharedQueueObserver {
-    static NSOperationQueueObserver *shareObserver = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        shareObserver = [[NSOperationQueueObserver alloc] init];
-    });
-    return shareObserver;
-}
-
-- (void)observe {
-    if (!self.isObserving) {
-        NSOperationQueue *sharedQueue = [NPRImageView processingQueue];
-        [sharedQueue addObserver:self forKeyPath:@"operationCount" options:NSKeyValueObservingOptionNew context:NULL];
-        self.observing = YES;
-    }
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"operationCount"]) {
-        int operations = [[change objectForKey:@"new"] intValue];
-        // NSLog(@"%d operations in queue", operations);
-        if (operations == 0) {
-            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-        } else {
-            //NSLog(@"In queue: ");
-            //for (AFImageRequestOperation *operation in [[NPRImageView processingQueue] operations]) {
-            //    NSLog(@" ---- %@", operation.request.URL.absoluteString);
-            //}
-            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-        }
-    }
-}
-
-- (void)dealloc {
-    [[NPRImageView processingQueue] removeObserver:self forKeyPath:@"operationCount"];
-}
-
-@end
 
 #pragma mark - NPRImageView
 
@@ -319,7 +112,7 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     [_messageLabel setTextAlignment:NSTextAlignmentCenter];
     [self addSubview:_messageLabel];
     
-    [[NSOperationQueueObserver sharedQueueObserver] observe];
+    [[NPROperationQueueObserver sharedQueueObserver] observe];
     
     [[NPRDiskCache sharedDiskCache] setCacheDirectoryName:@"nprimageviewCache"];
     
