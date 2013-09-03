@@ -182,6 +182,9 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
 
 - (void)setImage:(UIImage *)image {
     self.customImageView.image = image;
+    if (image) {
+        [self.indicatorView stopAnimating];
+    }
 }
 
 - (void)setImageWithContentsOfURL:(NSURL *)URL placeholderImage:(UIImage *)placeholderImage {
@@ -262,8 +265,7 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     NSString *key = [self cacheKeyWithURL:url];
     UIImage *processedImage = [self cachedProcessImageForKey:key];
     if (processedImage) {
-        self.customImageView.image = processedImage;
-        [self.indicatorView stopAnimating];
+        [self setImage:processedImage];
         dispatch_async(dispatch_get_main_queue(), ^{
             NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
             [notificationCenter postNotificationName:NPRDidSetImageNotification object:self];
@@ -383,7 +385,7 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
         }
         
         //set processed image
-        self.customImageView.image = processedImage;
+        [self setImage:processedImage];
         dispatch_async(dispatch_get_main_queue(), ^{
             NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
             [notificationCenter postNotificationName:NPRDidSetImageNotification object:self];
