@@ -187,8 +187,6 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
 - (void)setImageWithContentsOfURL:(NSURL *)URL placeholderImage:(UIImage *)placeholderImage {
     if (![URL.absoluteString isEqualToString:self.imageContentURL.absoluteString])
     {
-        [self setCacheKeyWithURL:URL.absoluteString];
-        
         [self.messageLabel setText:nil];
         [self.messageLabel setHidden:YES];
         [self.progressView setHidden:YES];
@@ -272,19 +270,11 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
         });
         return;
     } else {
-        // check if processed image exists on disk
+        // check if processed image or original image exists on disk
         if ([[NPRDiskCache sharedDiskCache] imageExistsOnDiskWithKey:key]) {
             [self continueImageProcessingFromDiskWithKey:key
                                            processingKey:key urlString:url];
             return;
-        }
-        // check if original image exists on disk
-        else {
-            if ([[NPRDiskCache sharedDiskCache] imageExistsOnDiskWithKey:url]) {
-                [self continueImageProcessingFromDiskWithKey:url
-                                               processingKey:key urlString:url];
-                return;
-            }
         }
     }
     
@@ -297,7 +287,6 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     [self.progressView setProgress:0];
     [self.progressView setHidden:NO];
     
-    @weakify(self);
     NSURL *urlToDownload = [NSURL URLWithString:url];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:urlToDownload];
     [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
@@ -326,9 +315,7 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     
     @weakify(imageOperation);
     [imageOperation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
-        @strongify(self);
         @strongify(imageOperation);
-        
         if ([imageOperation.request.URL.absoluteString isEqualToString: self.imageContentURL.absoluteString]) {
             if ((float)totalBytesRead/(float)totalBytesExpectedToRead  < 1) {
                 [self.messageLabel setText:nil];
@@ -363,6 +350,8 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
                 processedImage = [image imageCroppedAndScaledToSize:self.bounds.size
                                                         contentMode:self.contentMode
                                                            padToFit:NO];
+            } else {
+                processedImage = image;
             }
         } else {
             processedImage = self.placeholderImage;
@@ -409,8 +398,6 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
         }
         [self.progressView setHidden:YES];
         [self.indicatorView stopAnimating];
-    } else {
-        NSLog(@"");
     }
 }
 
@@ -447,12 +434,14 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
 
 #pragma mark - Cache
 
-- (void)setCacheKeyWithURL:(NSString *)url {
-    self.cacheKey = (self.shouldCrop)?[self cacheKeyWithURL:url]:url;
-}
-
 - (NSString *)cacheKeyWithURL:(NSString *)url {
-    return [NSString stringWithFormat:@"%@_%i", url, self.contentMode];
+    if (!self.shouldCrop) {
+        return url;
+    }
+    return [NSString stringWithFormat:@"%@_%@_%i",
+            url,
+            NSStringFromCGSize(self.bounds.size),
+            self.contentMode];
 }
 
 - (UIImage *)cachedProcessImageForKey:(NSString *)key {

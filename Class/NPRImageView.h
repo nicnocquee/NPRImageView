@@ -25,7 +25,6 @@ extern NSString * const NPRDidSetImageNotification;
 @property (nonatomic, strong) NSURL *imageContentURL;
 
 @property (nonatomic, readonly) NPRDiskCache *sharedCache;
-@property (nonatomic, strong) NSString *cacheKey;
 
 @property (nonatomic, assign) BOOL shouldHideIndicatorView;
 
