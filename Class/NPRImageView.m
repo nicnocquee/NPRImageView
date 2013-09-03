@@ -15,6 +15,8 @@
 #import "NPROperationQueueObserver.h"
 #import "NPRFailDownloadArray.h"
 
+#import <objc/message.h>
+
 NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetImage";
 
 @interface NPRImageView () <UIGestureRecognizerDelegate>
