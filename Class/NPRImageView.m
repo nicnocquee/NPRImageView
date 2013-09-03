@@ -13,11 +13,7 @@
 #import "UIImage+FX.h"
 
 #import "NPROperationQueueObserver.h"
-#import "NPRDiskCache.h"
 #import "NPRFailDownloadArray.h"
-#import "NPROperationQueue.h"
-
-#import <objc/message.h>
 
 NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetImage";
 

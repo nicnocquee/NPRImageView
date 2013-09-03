@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+#import "NPRDiskCache.h"
+#import "NPROperationQueue.h"
+
 @class NPRImageView;
-@class NPRDiskCache;
-@class NPROperationQueue;
 
 extern NSString * const NPRDidSetImageNotification;
 
