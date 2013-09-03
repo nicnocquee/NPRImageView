@@ -8,6 +8,8 @@
 
 #import "NPROperationQueueObserver.h"
 
+#import "NPROperationQueue.h"
+
 #import "NPRImageView.h"
 
 @implementation NPROperationQueueObserver
@@ -23,7 +25,7 @@
 
 - (void)observe {
     if (!self.isObserving) {
-        NSOperationQueue *sharedQueue = [NPRImageView processingQueue];
+        NPROperationQueue *sharedQueue = [NPRImageView processingQueue];
         [sharedQueue addObserver:self forKeyPath:@"operationCount" options:NSKeyValueObservingOptionNew context:NULL];
         self.observing = YES;
     }

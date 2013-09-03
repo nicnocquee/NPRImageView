@@ -17,6 +17,6 @@
 + (NPRDiskCache *)sharedDiskCache;
 - (BOOL)imageExistsOnDiskWithKey:(NSString *)key;
 - (UIImage *)imageFromDiskWithKey:(NSString *)key;
-- (void)writeImageToDisk:(NSData *)data key:(NSString *)key;
+- (void)writeImageToDisk:(UIImage *)image key:(NSString *)key;
 
 @end

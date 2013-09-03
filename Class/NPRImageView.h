@@ -10,6 +10,7 @@
 
 @class NPRImageView;
 @class NPRDiskCache;
+@class NPROperationQueue;
 
 extern NSString * const NPRDidSetImageNotification;
 
@@ -33,7 +34,7 @@ extern NSString * const NPRDidSetImageNotification;
 
 - (BOOL)isDownloadingImageAtURLString:(NSString *)urlString;
 
-+ (NSOperationQueue *)processingQueue;
++ (NPROperationQueue *)processingQueue;
 + (NSCache *)processedImageCache;
 + (void)printOperations;
 + (void)cancelAllOperations;

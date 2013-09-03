@@ -10,4 +10,10 @@
 
 @interface NPROperationQueue : NSOperationQueue
 
++ (NPROperationQueue *)processingQueue;
+
+- (void)queueProcessingOperation:(NSOperation *)operation urlString:(NSString *)urlString;
+- (BOOL)isDownloadingImageAtURLString:(NSString *)urlString;
+- (void)imageDownloadedAtURL:(NSString *)url;
+
 @end
