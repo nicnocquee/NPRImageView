@@ -203,7 +203,7 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
         
         [self queueImageForProcessingForURLString:URL.absoluteString];
     } else {
-        if (![self isDownloadingImageAtURLString:URL.absoluteString]) {
+        if (![[NPROperationQueue processingQueue] isDownloadingImageAtURLString:URL.absoluteString]) {
             [self.indicatorView stopAnimating];
         }
     }

@@ -32,8 +32,6 @@ extern NSString * const NPRDidSetImageNotification;
 
 + (UIImage *)originalImageForKey:(NSString *)key;
 
-- (BOOL)isDownloadingImageAtURLString:(NSString *)urlString;
-
 + (NPROperationQueue *)processingQueue;
 + (NSCache *)processedImageCache;
 + (void)printOperations;
