@@ -10,7 +10,7 @@
 
 #import "ImageViewCell.h"
 
-#import "EXTScope.h"
+#import <EXTScope.h>
 
 #define MAX_IMAGES 100
 
