@@ -144,23 +144,22 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     
     [self.customImageView setFrame:self.bounds];
     
-    [self.indicatorView setCenter:CGPointMake(CGRectGetWidth(self.frame)/2, CGRectGetHeight(self.frame)/2 - CGRectGetHeight(self.indicatorView.frame)/2 - 5)];
-    
+    [self.indicatorView setCenter:CGPointMake(CGRectGetWidth(self.bounds)/2, CGRectGetHeight(self.bounds)/2 - CGRectGetHeight(self.indicatorView.frame)/2 - 5)];
     CGRect frame = self.progressView.frame;
-    frame.size.width = 0.8 * CGRectGetWidth(self.frame);
+    frame.size.width = 0.8 * CGRectGetWidth(self.bounds);
     self.progressView.frame = frame;
     if (self.indicatorView.hidden) {
-        [self.progressView setCenter:CGPointMake(CGRectGetWidth(self.frame)/2, CGRectGetHeight(self.frame)/2)];
+        [self.progressView setCenter:CGPointMake(CGRectGetWidth(self.bounds)/2, CGRectGetHeight(self.bounds)/2)];
     } else {
-        [self.progressView setCenter:CGPointMake(CGRectGetWidth(self.frame)/2, CGRectGetHeight(self.frame)/2 + CGRectGetHeight(self.progressView.frame)/2 + 5 )];
+        [self.progressView setCenter:CGPointMake(CGRectGetWidth(self.bounds)/2, CGRectGetHeight(self.bounds)/2 + CGRectGetHeight(self.progressView.frame)/2 + 5 )];
     }
     
     if (!self.messageLabel.hidden) {
         CGRect frame = self.messageLabel.frame;
-        frame.size.width = 0.8 * CGRectGetWidth(self.frame);
+        frame.size.width = 0.8 * CGRectGetWidth(self.bounds);
         self.messageLabel.frame = frame;
         [self.messageLabel sizeToFit];
-        [self.messageLabel setCenter:CGPointMake(CGRectGetWidth(self.frame)/2, CGRectGetHeight(self.frame)/2)];
+        [self.messageLabel setCenter:CGPointMake(CGRectGetWidth(self.bounds)/2, CGRectGetHeight(self.bounds)/2)];
     }
 }
 
@@ -233,32 +232,12 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     }
 }
 
-#pragma mark - Image Processing
-
 - (void)showPlaceholderImage {
     self.customImageView.image = self.placeholderImage;
 }
 
-- (void)continueImageProcessingFromDiskWithKey:(NSString *)key processingKey:(NSString *)processKey urlString:(NSString *)urlString{
-    if (!self.shouldHideIndicatorView) {
-        [self.indicatorView startAnimating];
-        [self.indicatorView setHidden:NO];
-    }
-    
-    [self showPlaceholderImage];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        UIImage *image = [[NPRDiskCache sharedDiskCache] imageFromDiskWithKey:key];
-        if (image) {
-            UIImage *im = [self processImage:image key:processKey urlString:urlString];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self setProcessedImageOnMainThread:@[im, processKey, urlString]];
-            });
-            
-        } else {
-            NSLog(@"");
-        }
-    });
-}
+
+#pragma mark - Image Processing
 
 - (void)queueImageForProcessingForURLString:(NSString *)url {
     // check if image exists in cache
@@ -274,9 +253,10 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     } else {
         // check if processed image or original image exists on disk
         if ([[NPRDiskCache sharedDiskCache] imageExistsOnDiskWithKey:key]) {
-            [self continueImageProcessingFromDiskWithKey:key
-                                           processingKey:key urlString:url];
+            [self continueImageProcessingFromDiskWithKey:key urlString:url];
             return;
+        } else if ([[NPRDiskCache sharedDiskCache] imageExistsOnDiskWithKey:url]) {
+            [self continueImageProcessingFromDiskWithKey:url urlString:url];
         }
     }
     
@@ -293,9 +273,8 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:urlToDownload];
     [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
     AFImageRequestOperation *imageOperation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
-        UIImage *im = [self processImage:image key:key urlString:url];
-        [[NPRDiskCache sharedDiskCache] writeImageToDisk:im key:url];
-        return im;
+        [[NPRDiskCache sharedDiskCache] writeImageToDisk:image key:url]; // cache original image
+        return [self processImage:image key:key urlString:url];
     } success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
         [[NPRFailDownloadArray array] removeObject:request.URL.absoluteString];
         [[NPROperationQueue processingQueue] imageDownloadedAtURL:request.URL.absoluteString];
@@ -341,6 +320,24 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     [[NPROperationQueue processingQueue] queueProcessingOperation:imageOperation urlString:url];
 }
 
+- (void)continueImageProcessingFromDiskWithKey:(NSString *)key urlString:(NSString *)urlString{
+    if (!self.shouldHideIndicatorView) {
+        [self.indicatorView startAnimating];
+        [self.indicatorView setHidden:NO];
+    }
+    
+    [self showPlaceholderImage];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        UIImage *image = [[NPRDiskCache sharedDiskCache] imageFromDiskWithKey:key];
+        if (image) {
+            UIImage *im = [self processImage:image key:key urlString:urlString];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self setProcessedImageOnMainThread:@[im, key, urlString]];
+            });
+        }
+    });
+}
+
 - (UIImage *)processImage:(UIImage *)image key:(NSString *)key urlString:(NSString *)url{
     //check cache
     UIImage *processedImage = (url)?[self cachedProcessImageForKey:key]:nil;
@@ -363,7 +360,7 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     if (processedImage)
     {
         //cache image
-        [self cacheProcessedImage:processedImage forKey:key];
+        [self cacheProcessedImage:processedImage forKey:key url:url];
     }
     
     return processedImage;
@@ -376,7 +373,6 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     //set image
     if ([self.imageContentURL.absoluteString isEqualToString:[array objectAtIndex:2]])
     {
-        
         // crossfade
         if (self.crossFade) {
             id animation = objc_msgSend(NSClassFromString(@"CATransition"), @selector(animation));
@@ -450,9 +446,11 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     return [[[self class] processedImageCache] objectForKey:key];
 }
 
-- (void)cacheProcessedImage:(UIImage *)processedImage forKey:(NSString *)cacheKey {
+- (void)cacheProcessedImage:(UIImage *)processedImage forKey:(NSString *)cacheKey  url:url {
     [[[self class] processedImageCache] setObject:processedImage forKey:cacheKey];
-    [[NPRDiskCache sharedDiskCache] writeImageToDisk:processedImage key:cacheKey];
+    if (![cacheKey isEqualToString:url]) {
+        [[NPRDiskCache sharedDiskCache] writeImageToDisk:processedImage key:cacheKey]; // processed and original is the same, no need to cache to disk again.
+    }
 }
 
 @end
