@@ -118,6 +118,7 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     [self setUserInteractionEnabled:YES];
     
     self.crossFade = YES;
+    self.shouldCrop = YES;
 }
 
 #pragma mark - Gesture
@@ -357,10 +358,12 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     if (!processedImage)
     {
         if (image) {
-            //crop and scale image
-            processedImage = [image imageCroppedAndScaledToSize:self.bounds.size
-                                                    contentMode:self.contentMode
-                                                       padToFit:NO];
+            if (self.shouldCrop) {
+                //crop and scale image
+                processedImage = [image imageCroppedAndScaledToSize:self.bounds.size
+                                                        contentMode:self.contentMode
+                                                           padToFit:NO];
+            }
         } else {
             processedImage = self.placeholderImage;
         }
@@ -445,7 +448,7 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
 #pragma mark - Cache
 
 - (void)setCacheKeyWithURL:(NSString *)url {
-    self.cacheKey = [self cacheKeyWithURL:url];
+    self.cacheKey = (self.shouldCrop)?[self cacheKeyWithURL:url]:url;
 }
 
 - (NSString *)cacheKeyWithURL:(NSString *)url {
