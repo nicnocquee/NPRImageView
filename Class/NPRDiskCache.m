@@ -22,7 +22,7 @@
 - (void)writeImageToDisk:(UIImage *)image key:(NSString *)key{
     NSString *hashKey = [NSString stringWithFormat:@"%d", [key hash]];
     if (![self imageExistsOnDiskWithKey:key]) {
-        NSData *data = UIImagePNGRepresentation(image);
+        NSData *data = UIImageJPEGRepresentation(image, 1);
         NSString *filePath = [self filePathWithKey:key];
         
         NSError *error;
