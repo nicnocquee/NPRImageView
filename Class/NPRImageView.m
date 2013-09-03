@@ -118,7 +118,6 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     [self setUserInteractionEnabled:YES];
     
     self.crossFade = YES;
-    self.shouldCrop = YES;
 }
 
 #pragma mark - Gesture
@@ -252,10 +251,10 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
         return;
     } else {
         // check if processed image or original image exists on disk
-        if ([[NPRDiskCache sharedDiskCache] imageExistsOnDiskWithKey:key]) {
+        if ([[NPRDiskCache sharedDiskCache] imageExistsOnDiskWithKey:key]) { // can be original or processed because cacheKeyWithURL can return url itself if useOriginal is set to YES
             [self continueImageProcessingFromDiskWithKey:key urlString:url];
             return;
-        } else if ([[NPRDiskCache sharedDiskCache] imageExistsOnDiskWithKey:url]) {
+        } else if ([[NPRDiskCache sharedDiskCache] imageExistsOnDiskWithKey:url]) { // original
             [self continueImageProcessingFromDiskWithKey:url urlString:url];
         }
     }
@@ -331,8 +330,12 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
         UIImage *image = [[NPRDiskCache sharedDiskCache] imageFromDiskWithKey:key];
         if (image) {
             UIImage *im = [self processImage:image key:key urlString:urlString];
+            NSString *newKey = key;
+            if ([key isEqualToString:urlString]) {
+                newKey = [self cacheKeyWithURL:urlString];
+            }
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self setProcessedImageOnMainThread:@[im, key, urlString]];
+                [self setProcessedImageOnMainThread:@[im, newKey, urlString]];
             });
         }
     });
@@ -344,7 +347,7 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     if (!processedImage)
     {
         if (image) {
-            if (self.shouldCrop) {
+            if (!self.useOriginal) {
                 //crop and scale image
                 processedImage = [image imageCroppedAndScaledToSize:self.bounds.size
                                                         contentMode:self.contentMode
@@ -433,7 +436,7 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
 #pragma mark - Cache
 
 - (NSString *)cacheKeyWithURL:(NSString *)url {
-    if (!self.shouldCrop) {
+    if (self.useOriginal) {
         return url;
     }
     return [NSString stringWithFormat:@"%@_%@_%i",
