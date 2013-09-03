@@ -1,6 +1,0 @@
-[submodule "Externals/AFNetworking"]
-	path = Externals/AFNetworking
-	url = https://github.com/AFNetworking/AFNetworking.git
-[submodule "Externals/libextobjc"]
-	path = Externals/libextobjc
-	url = https://github.com/jspahrsummers/libextobjc.git
