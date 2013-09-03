@@ -143,19 +143,15 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     
     [self.customImageView setFrame:self.bounds];
     
-    if (!self.indicatorView.hidden) {
-        [self.indicatorView setCenter:CGPointMake(CGRectGetWidth(self.frame)/2, CGRectGetHeight(self.frame)/2 - CGRectGetHeight(self.indicatorView.frame)/2 - 5)];
-    }
+    [self.indicatorView setCenter:CGPointMake(CGRectGetWidth(self.frame)/2, CGRectGetHeight(self.frame)/2 - CGRectGetHeight(self.indicatorView.frame)/2 - 5)];
     
-    if (!self.progressView.hidden) {
-        CGRect frame = self.progressView.frame;
-        frame.size.width = 0.8 * CGRectGetWidth(self.frame);
-        self.progressView.frame = frame;
-        if (self.indicatorView.hidden) {
-            [self.progressView setCenter:CGPointMake(CGRectGetWidth(self.frame)/2, CGRectGetHeight(self.frame)/2)];
-        } else {
-            [self.progressView setCenter:CGPointMake(CGRectGetWidth(self.frame)/2, CGRectGetHeight(self.frame)/2 + CGRectGetHeight(self.progressView.frame)/2 + 5 )];
-        }
+    CGRect frame = self.progressView.frame;
+    frame.size.width = 0.8 * CGRectGetWidth(self.frame);
+    self.progressView.frame = frame;
+    if (self.indicatorView.hidden) {
+        [self.progressView setCenter:CGPointMake(CGRectGetWidth(self.frame)/2, CGRectGetHeight(self.frame)/2)];
+    } else {
+        [self.progressView setCenter:CGPointMake(CGRectGetWidth(self.frame)/2, CGRectGetHeight(self.frame)/2 + CGRectGetHeight(self.progressView.frame)/2 + 5 )];
     }
     
     if (!self.messageLabel.hidden) {
@@ -325,6 +321,7 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
             [self setProcessedImageOnMainThread:@[[NSNull null], request.URL.absoluteString, request.URL.absoluteString]];
         }
     }];
+    [imageOperation setAutomaticallyInflatesResponseImage:NO];
     
     @weakify(imageOperation);
     [imageOperation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
