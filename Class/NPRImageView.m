@@ -254,6 +254,7 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
             return;
         } else if ([[NPRDiskCache sharedDiskCache] imageExistsOnDiskWithKey:url]) { // original
             [self continueImageProcessingFromDiskWithKey:url urlString:url];
+            return;
         }
     }
     
@@ -269,14 +270,14 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     NSURL *urlToDownload = [NSURL URLWithString:url];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:urlToDownload];
     [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
+    
     AFImageRequestOperation *imageOperation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
         [[NPRDiskCache sharedDiskCache] writeImageToDisk:image key:url]; // cache original image
         return [self processImage:image key:key urlString:url];
     } success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
         [[NPRFailDownloadArray array] removeObject:request.URL.absoluteString];
         [[NPROperationQueue processingQueue] imageDownloadedAtURL:request.URL.absoluteString];
-        NSString *thisKey = [self cacheKeyWithURL:request.URL.absoluteString];
-        [self setProcessedImageOnMainThread:@[image,thisKey,request.URL.absoluteString]];
+        [self setProcessedImageOnMainThread:@[image,key,request.URL.absoluteString]];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
         [[NPRFailDownloadArray array] addObject:request.URL.absoluteString];
         [[NPROperationQueue processingQueue] imageDownloadedAtURL:request.URL.absoluteString];
@@ -383,10 +384,8 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
         
         //set processed image
         [self setImage:processedImage];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-            [notificationCenter postNotificationName:NPRDidSetImageNotification object:self];
-        });
+        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+        [notificationCenter postNotificationName:NPRDidSetImageNotification object:self];
         
         if (processedImage) {
             [self.messageLabel setHidden:YES];
