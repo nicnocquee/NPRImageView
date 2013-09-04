@@ -83,7 +83,6 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         @strongify(self);
         NSMutableArray *urls = [NSMutableArray array];
-        
         //google image api has an 8 page max, with 8 images per page, so 64 image max per search term
         int urls_grabbed = 0;
         for (int i = 0; i < 8; i++) {

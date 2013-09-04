@@ -8,10 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		032CBBB317D0E4F0001205B1 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 032CBBB217D0E4F0001205B1 /* Security.framework */; };
-		033B39CA17D60002008F99D7 /* NPROperationQueueObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 033B39C917D60002008F99D7 /* NPROperationQueueObserver.m */; };
-		033B39D017D60105008F99D7 /* NPRDiskCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 033B39CF17D60105008F99D7 /* NPRDiskCache.m */; };
-		033B39D317D601F5008F99D7 /* NPRFailDownloadArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 033B39D217D601F5008F99D7 /* NPRFailDownloadArray.m */; };
-		033B39D617D60250008F99D7 /* NPROperationQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 033B39D517D60250008F99D7 /* NPROperationQueue.m */; };
 		038F14A0176EDE88007A62F9 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 038F149F176EDE88007A62F9 /* XCTest.framework */; };
 		038F14A1176EDE88007A62F9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03C6792C172688AA004D2BA3 /* Foundation.framework */; };
 		038F14A2176EDE88007A62F9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03C6792A172688AA004D2BA3 /* UIKit.framework */; };
@@ -49,14 +45,6 @@
 
 /* Begin PBXFileReference section */
 		032CBBB217D0E4F0001205B1 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		033B39C817D60002008F99D7 /* NPROperationQueueObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NPROperationQueueObserver.h; path = Class/NPROperationQueueObserver.h; sourceTree = SOURCE_ROOT; };
-		033B39C917D60002008F99D7 /* NPROperationQueueObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NPROperationQueueObserver.m; path = Class/NPROperationQueueObserver.m; sourceTree = SOURCE_ROOT; };
-		033B39CE17D60105008F99D7 /* NPRDiskCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NPRDiskCache.h; path = Class/NPRDiskCache.h; sourceTree = SOURCE_ROOT; };
-		033B39CF17D60105008F99D7 /* NPRDiskCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NPRDiskCache.m; path = Class/NPRDiskCache.m; sourceTree = SOURCE_ROOT; };
-		033B39D117D601F5008F99D7 /* NPRFailDownloadArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NPRFailDownloadArray.h; path = Class/NPRFailDownloadArray.h; sourceTree = SOURCE_ROOT; };
-		033B39D217D601F5008F99D7 /* NPRFailDownloadArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NPRFailDownloadArray.m; path = Class/NPRFailDownloadArray.m; sourceTree = SOURCE_ROOT; };
-		033B39D417D60250008F99D7 /* NPROperationQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NPROperationQueue.h; path = Class/NPROperationQueue.h; sourceTree = SOURCE_ROOT; };
-		033B39D517D60250008F99D7 /* NPROperationQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NPROperationQueue.m; path = Class/NPROperationQueue.m; sourceTree = SOURCE_ROOT; };
 		038F149E176EDE88007A62F9 /* NPRImageView Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "NPRImageView Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		038F149F176EDE88007A62F9 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		038F14A5176EDE88007A62F9 /* NPRImageView Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "NPRImageView Tests-Info.plist"; sourceTree = "<group>"; };
@@ -212,14 +200,6 @@
 				03C67BD217269B25004D2BA3 /* UIImage+FX.h */,
 				03C6795017268979004D2BA3 /* NPRImageView.h */,
 				03C6795117268979004D2BA3 /* NPRImageView.m */,
-				033B39C817D60002008F99D7 /* NPROperationQueueObserver.h */,
-				033B39C917D60002008F99D7 /* NPROperationQueueObserver.m */,
-				033B39CE17D60105008F99D7 /* NPRDiskCache.h */,
-				033B39CF17D60105008F99D7 /* NPRDiskCache.m */,
-				033B39D117D601F5008F99D7 /* NPRFailDownloadArray.h */,
-				033B39D217D601F5008F99D7 /* NPRFailDownloadArray.m */,
-				033B39D417D60250008F99D7 /* NPROperationQueue.h */,
-				033B39D517D60250008F99D7 /* NPROperationQueue.m */,
 			);
 			name = NPRImageView;
 			sourceTree = "<group>";
@@ -366,13 +346,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				033B39D317D601F5008F99D7 /* NPRFailDownloadArray.m in Sources */,
-				033B39D017D60105008F99D7 /* NPRDiskCache.m in Sources */,
-				033B39CA17D60002008F99D7 /* NPROperationQueueObserver.m in Sources */,
 				03C67937172688AA004D2BA3 /* main.m in Sources */,
 				03C6793B172688AA004D2BA3 /* AppDelegate.m in Sources */,
 				03C6794F172688D7004D2BA3 /* ExampleViewController.m in Sources */,
-				033B39D617D60250008F99D7 /* NPROperationQueue.m in Sources */,
 				03C6795217268979004D2BA3 /* NPRImageView.m in Sources */,
 				03C67BC8172690BB004D2BA3 /* ImageViewCell.m in Sources */,
 				03C67BD317269B25004D2BA3 /* UIImage+FX.m in Sources */,
