@@ -401,6 +401,10 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     return NO;
 }
 
+- (BOOL)hasDownloadedOriginalImageAtURL:(NSString *)url {
+    return ([[NPRDiskCache sharedDiskCache] imageExistsOnDiskWithKey:url]);
+}
+
 #pragma mark - Setter
 
 - (void)setImage:(UIImage *)image {
