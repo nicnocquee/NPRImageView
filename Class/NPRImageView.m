@@ -242,18 +242,24 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     UIImage *processedImage = [self cachedProcessImageForKey:key];
     if (processedImage) {
         [self setImage:processedImage];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-            [notificationCenter postNotificationName:NPRDidSetImageNotification object:self];
-        });
+        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+        [notificationCenter postNotificationName:NPRDidSetImageNotification object:self];
         return;
     } else {
         // check if processed image or original image exists on disk
         if ([[NPRDiskCache sharedDiskCache] imageExistsOnDiskWithKey:key]) { // can be original or processed because cacheKeyWithURL can return url itself if useOriginal is set to YES
-            [self continueImageProcessingFromDiskWithKey:key urlString:url];
+            [self showPlaceholderImage];
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+                UIImage *image = [[NPRDiskCache sharedDiskCache] imageFromDiskWithKey:key];
+                if (image) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self setProcessedImageOnMainThread:@[image, key, url]];
+                    });
+                }
+            });
             return;
         } else if ([[NPRDiskCache sharedDiskCache] imageExistsOnDiskWithKey:url]) { // original
-            [self continueImageProcessingFromDiskWithKey:url urlString:url];
+            [self continueImageProcessingFromOriginalImageOnDiskWithKey:key urlString:url];
             return;
         }
     }
@@ -318,7 +324,7 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     [[NPROperationQueue processingQueue] queueProcessingOperation:imageOperation urlString:url];
 }
 
-- (void)continueImageProcessingFromDiskWithKey:(NSString *)key urlString:(NSString *)urlString{
+- (void)continueImageProcessingFromOriginalImageOnDiskWithKey:(NSString *)key urlString:(NSString *)urlString{
     if (!self.shouldHideIndicatorView) {
         [self.indicatorView startAnimating];
         [self.indicatorView setHidden:NO];
@@ -326,15 +332,11 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
     
     [self showPlaceholderImage];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        UIImage *image = [[NPRDiskCache sharedDiskCache] imageFromDiskWithKey:key];
+        UIImage *image = [[NPRDiskCache sharedDiskCache] imageFromDiskWithKey:urlString];
         if (image) {
             UIImage *im = [self processImage:image key:key urlString:urlString];
-            NSString *newKey = key;
-            if ([key isEqualToString:urlString]) {
-                newKey = [self cacheKeyWithURL:urlString];
-            }
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self setProcessedImageOnMainThread:@[im, newKey, urlString]];
+                [self setProcessedImageOnMainThread:@[image, key, urlString]];
             });
         }
     });
@@ -342,7 +344,8 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
 
 - (UIImage *)processImage:(UIImage *)image key:(NSString *)key urlString:(NSString *)url{
     //check cache
-    UIImage *processedImage = (url)?[self cachedProcessImageForKey:key]:nil;
+    UIImage *processedImage = [self cachedProcessImageForKey:key];
+    BOOL cropped = NO;
     if (!processedImage)
     {
         if (image) {
@@ -351,6 +354,7 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
                 processedImage = [image imageCroppedAndScaledToSize:self.bounds.size
                                                         contentMode:self.contentMode
                                                            padToFit:NO];
+                cropped = YES;
             } else {
                 processedImage = image;
             }
@@ -359,7 +363,7 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
         }
     }
     
-    if (processedImage)
+    if (cropped)
     {
         //cache image
         [self cacheProcessedImage:processedImage forKey:key url:url];
