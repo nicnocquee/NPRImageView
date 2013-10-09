@@ -407,6 +407,11 @@ NSString * const NPRDidSetImageNotification = @"nicnocquee.NPRImageView.didSetIm
 
 #pragma mark - Setter
 
+- (void)setFrame:(CGRect)frame {
+    [super setFrame:frame];
+    [self.customImageView setFrame:CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame))];
+}
+
 - (void)setImage:(UIImage *)image {
     self.customImageView.image = image;
 }
