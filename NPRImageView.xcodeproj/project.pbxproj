@@ -13,6 +13,8 @@
 		038F14A2176EDE88007A62F9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03C6792A172688AA004D2BA3 /* UIKit.framework */; };
 		038F14A8176EDE88007A62F9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 038F14A6176EDE88007A62F9 /* InfoPlist.strings */; };
 		038F14AA176EDE88007A62F9 /* NPRImageView_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 038F14A9176EDE88007A62F9 /* NPRImageView_Tests.m */; };
+		0391A5DC180C41C100BD202F /* NPRImageOperationQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 0391A5D8180C41C100BD202F /* NPRImageOperationQueue.m */; };
+		0391A5DD180C41C100BD202F /* NPRDiskCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 0391A5DA180C41C100BD202F /* NPRDiskCache.m */; };
 		03C6792B172688AA004D2BA3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03C6792A172688AA004D2BA3 /* UIKit.framework */; };
 		03C6792D172688AA004D2BA3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03C6792C172688AA004D2BA3 /* Foundation.framework */; };
 		03C6792F172688AA004D2BA3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03C6792E172688AA004D2BA3 /* CoreGraphics.framework */; };
@@ -51,6 +53,10 @@
 		038F14A7176EDE88007A62F9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		038F14A9176EDE88007A62F9 /* NPRImageView_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NPRImageView_Tests.m; sourceTree = "<group>"; };
 		038F14AB176EDE88007A62F9 /* NPRImageView Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NPRImageView Tests-Prefix.pch"; sourceTree = "<group>"; };
+		0391A5D8180C41C100BD202F /* NPRImageOperationQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NPRImageOperationQueue.m; path = Class/NPRImageOperationQueue.m; sourceTree = SOURCE_ROOT; };
+		0391A5D9180C41C100BD202F /* NPRImageOperationQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NPRImageOperationQueue.h; path = Class/NPRImageOperationQueue.h; sourceTree = SOURCE_ROOT; };
+		0391A5DA180C41C100BD202F /* NPRDiskCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NPRDiskCache.m; path = Class/NPRDiskCache.m; sourceTree = SOURCE_ROOT; };
+		0391A5DB180C41C100BD202F /* NPRDiskCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NPRDiskCache.h; path = Class/NPRDiskCache.h; sourceTree = SOURCE_ROOT; };
 		03C67927172688AA004D2BA3 /* NPRImageView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NPRImageView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		03C6792A172688AA004D2BA3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		03C6792C172688AA004D2BA3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -196,6 +202,10 @@
 		03C6795317268981004D2BA3 /* NPRImageView */ = {
 			isa = PBXGroup;
 			children = (
+				0391A5D8180C41C100BD202F /* NPRImageOperationQueue.m */,
+				0391A5D9180C41C100BD202F /* NPRImageOperationQueue.h */,
+				0391A5DA180C41C100BD202F /* NPRDiskCache.m */,
+				0391A5DB180C41C100BD202F /* NPRDiskCache.h */,
 				03C67BD117269B25004D2BA3 /* UIImage+FX.m */,
 				03C67BD217269B25004D2BA3 /* UIImage+FX.h */,
 				03C6795017268979004D2BA3 /* NPRImageView.h */,
@@ -346,11 +356,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0391A5DD180C41C100BD202F /* NPRDiskCache.m in Sources */,
 				03C67937172688AA004D2BA3 /* main.m in Sources */,
 				03C6793B172688AA004D2BA3 /* AppDelegate.m in Sources */,
 				03C6794F172688D7004D2BA3 /* ExampleViewController.m in Sources */,
 				03C6795217268979004D2BA3 /* NPRImageView.m in Sources */,
 				03C67BC8172690BB004D2BA3 /* ImageViewCell.m in Sources */,
+				0391A5DC180C41C100BD202F /* NPRImageOperationQueue.m in Sources */,
 				03C67BD317269B25004D2BA3 /* UIImage+FX.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

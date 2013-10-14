@@ -9,12 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @class NPRImageView;
+@class NPRDiskCache;
 
 extern NSString * const NPRDidSetImageNotification;
-
-@interface NPRDiskCache : NSObject
-- (BOOL)imageExistsOnDiskWithKey:(NSString *)key;
-@end
 
 @interface NPRImageView : UIImageView
 
@@ -23,7 +20,7 @@ extern NSString * const NPRDidSetImageNotification;
 @property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
 @property (nonatomic, strong) UILabel *messageLabel;
 @property (nonatomic, strong) UIImage *placeholderImage;
-@property (nonatomic, strong) NSURL *imageContentURL;
+@property (nonatomic, copy) NSURL *imageContentURL;
 
 @property (nonatomic, readonly) NPRDiskCache *sharedCache;
 @property (nonatomic, strong) NSString *cacheKey;
