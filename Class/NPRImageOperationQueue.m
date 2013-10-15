@@ -1,8 +1,8 @@
 //
 //  NPRImageOperationQueue.m
-//  Pods
+//  https://github.com/nicnocquee/NPRImageView
 //
-//  Created by Nico Prananta on 10/14/13.
+//  Created by Nico Prananta (@nicnocquee) on 10/14/13.
 //
 //
 
@@ -60,18 +60,18 @@ NSString * const NPRImageDownloadProgressChangedNotificationBytesTotalBytesReadK
     AFImageRequestOperation *imageOperation = [AFImageRequestOperation imageRequestOperationWithRequest:request
                                                                                    imageProcessingBlock:processingBlock
                                                                                                 success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                                                                                    
-                                                       [self.downloadingURLs removeObject:request.URL.absoluteString];
+                                                                                                    [self.downloadingURLs removeObject:request.URL.absoluteString];
+                                                                                                    if (image) {
                                                                                                         successBlock(request, response, image);
-                                                                                                    [[NSNotificationCenter defaultCenter] postNotificationName:NPRDownloadImageDidSucceedNotification object:nil userInfo:@{NPRDidDownloadImageNotificationImageKey: image, NPRImageURLKey:request.URL}];
-        
-    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.downloadingURLs removeObject:request.URL.absoluteString];
-            failureBlock(request, response, error);
-            [[NSNotificationCenter defaultCenter] postNotificationName:NPRDownloadImageDidFailNotification object:nil userInfo:@{NPRDownloadDidFailNotificationErrorKey: error, NPRImageURLKey:request.URL}];
-        });
-    }];
+                                                                                                        [[NSNotificationCenter defaultCenter] postNotificationName:NPRDownloadImageDidSucceedNotification object:nil userInfo:@{NPRDidDownloadImageNotificationImageKey: image, NPRImageURLKey:request.URL}];
+                                                                                                    }
+                                                                                                } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+                                                                                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                                        [self.downloadingURLs removeObject:request.URL.absoluteString];
+                                                                                                        failureBlock(request, response, error);
+                                                                                                        [[NSNotificationCenter defaultCenter] postNotificationName:NPRDownloadImageDidFailNotification object:nil userInfo:@{NPRDownloadDidFailNotificationErrorKey: error, NPRImageURLKey:request.URL}];
+                                                                                                    });
+                                                                                                }];
     
     [imageOperation setAutomaticallyInflatesResponseImage:NO];
     
@@ -117,21 +117,21 @@ NSString * const NPRImageDownloadProgressChangedNotificationBytesTotalBytesReadK
     
     //make op a dependency of all queued ops
     
-    NSInteger maxOperations = ([queue maxConcurrentOperationCount] > 0) ? [queue maxConcurrentOperationCount]: INT_MAX;
-    NSInteger index = [queue operationCount] - maxOperations;
-    if (index > 0)
-    {
-        AFImageRequestOperation *op = (AFImageRequestOperation *)[[queue operations] objectAtIndex:index-1];
-        AFImageRequestOperation *oper = (AFImageRequestOperation *)operation;
-        if (queuedOperation) {
-            oper = queuedOperation;
-        }
-        if (![op isExecuting] && ![op.request.URL.absoluteString isEqualToString:oper.request.URL.absoluteString])
-        {
-            [oper removeDependency:op];
-            [op addDependency:oper];
-        }
-    }
+    //    NSInteger maxOperations = ([queue maxConcurrentOperationCount] > 0) ? [queue maxConcurrentOperationCount]: INT_MAX;
+    //    NSInteger index = [queue operationCount] - maxOperations;
+    //    if (index >= 0)
+    //    {
+    //        AFImageRequestOperation *op = (AFImageRequestOperation *)[[queue operations] objectAtIndex:index];
+    //        AFImageRequestOperation *oper = (AFImageRequestOperation *)operation;
+    //        if (queuedOperation) {
+    //            oper = queuedOperation;
+    //        }
+    //        if (![op isExecuting] && ![op.request.URL.absoluteString isEqualToString:oper.request.URL.absoluteString])
+    //        {
+    //            [oper removeDependency:op];
+    //            [op addDependency:oper];
+    //        }
+    //    }
     
     if (!queued) {
         //add operation to queue

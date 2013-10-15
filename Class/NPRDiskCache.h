@@ -1,8 +1,8 @@
 //
 //  NPRDiskCache.h
-//  Pods
+//  https://github.com/nicnocquee/NPRImageView
 //
-//  Created by Nico Prananta on 10/14/13.
+//  Created by Nico Prananta (@nicnocquee) on 10/14/13.
 //
 //
 

@@ -82,6 +82,8 @@
 		03C67BCE17269A75004D2BA3 /* placeholder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "placeholder@2x.png"; sourceTree = "<group>"; };
 		03C67BD117269B25004D2BA3 /* UIImage+FX.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+FX.m"; path = "Class/UIImage+FX.m"; sourceTree = SOURCE_ROOT; };
 		03C67BD217269B25004D2BA3 /* UIImage+FX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+FX.h"; path = "Class/UIImage+FX.h"; sourceTree = SOURCE_ROOT; };
+		03F872FE180D940E006CB453 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		03F872FF180D9427006CB453 /* NPRImageView.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = NPRImageView.podspec; sourceTree = "<group>"; };
 		BC36DE406B93404B8A2D8485 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		D05073B152914DAFA2901484 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -136,6 +138,8 @@
 		03C6791E172688AA004D2BA3 = {
 			isa = PBXGroup;
 			children = (
+				03F872FF180D9427006CB453 /* NPRImageView.podspec */,
+				03F872FE180D940E006CB453 /* README.md */,
 				03C67930172688AA004D2BA3 /* NPRImageView */,
 				038F14A3176EDE88007A62F9 /* NPRImageView Tests */,
 				03C67929172688AA004D2BA3 /* Frameworks */,
